@@ -7,8 +7,8 @@ import argparse
 
 # --- PARAMETER-STEUERUNG ---
 parser = argparse.ArgumentParser(description='VVO Abfahrtsmonitor für openHASP (480px) - 5 Zeilen')
-parser.add_argument('station', type=str, help='Name der Haltestelle')
-parser.add_argument('-h', '--host', type=str, default="127.0.0.1", help='MQTT Broker IP ')
+parser.add_argument('station', type=str, help='Name der Haltestelle https://www.vvo-mobil.de/#/timetables/results')   
+parser.add_argument('-b', '--host', type=str, default="127.0.0.1", help='MQTT Broker IP')
 parser.add_argument('--gleis', type=str, default=None, help='Optionale Gleisnummer')
 parser.add_argument('--filter', nargs='+', help='Filter: tram bus s zug')
 parser.add_argument('--page', type=int, default=1, help='Display-Seite (p1, p2, etc.)')
@@ -20,10 +20,23 @@ MQTT_TOPIC_BASE = f"hasp/plate/command/p{args.page}b"
 COLOR_URGENT = "#FF0000"
 COLOR_NORMAL = "#7F8C8D"
 
-MOT_FILTER_MAP = {"tram": "Tram", "bus": "CityBus", "s": "SuburbanRailway", "zug": "RegionalTrain"}
+
+# Jetzt wird bei "--filter zug" sowohl Regionalzug als auch Fernzug (Train) gefunden
+MOT_FILTER_MAP = {
+    "tram": "Tram", 
+    "bus": "CityBus", 
+    "s": "SuburbanRailway", 
+    "zug": ["RegionalTrain", "Train", "RegionalBus"] 
+}
+
 ICON_MAP = {
-    "Tram": "L:/ico-tram.png", "CityBus": "L:/ico-bus.png", "RegionalBus": "L:/ico-bus.png",
-    "SuburbanRailway": "L:/ico-metropolitan-railway.png", "RegionalTrain": "L:/ico-train.png", "Default": "L:/ico-tram.png"
+    "Tram": "L:/ico-tram.png", 
+    "CityBus": "L:/ico-bus.png", 
+    "RegionalBus": "L:/ico-bus.png",
+    "SuburbanRailway": "L:/ico-metropolitan-railway.png", 
+    "RegionalTrain": "L:/ico-train.png", 
+    "Train": "L:/ico-train.png", # Wichtig für IC/RE
+    "Default": "L:/ico-tram.png"
 }
 
 def parse_vvo_date(vvo_date):
@@ -35,6 +48,7 @@ def parse_vvo_date(vvo_date):
 
 def get_vvo_departures(station_name, platform_filter, mot_filter):
     try:
+        # 1. Haltestellen-ID (StopID) finden
         r = requests.post("https://webapi.vvo-online.de/tr/pointfinder?format=json", 
                          json={"query": station_name, "stopsOnly": True, "limit": 1}, timeout=10)
         points = r.json().get("Points", [])
@@ -42,39 +56,56 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
         
         stopid, _, _, actual_name = points[0].split("|")[0:4]
 
+        # 2. Abfahrtsdaten abrufen
         payload = {
-            "stopid": stopid, "time": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-            "isarrival": False, "limit": 50, 
-            "mot": ["Tram", "CityBus", "SuburbanRailway", "RegionalTrain", "RegionalBus"]
+            "stopid": stopid, 
+            "time": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+            "isarrival": False, 
+            "limit": 50, 
+            "mot": ["Tram", "CityBus", "SuburbanRailway", "RegionalTrain", "RegionalBus", "Train"]
         }
         res = requests.post("https://webapi.vvo-online.de/dm?format=json", json=payload, timeout=10)
         data = res.json()
         
         now = datetime.now(timezone.utc)
         departures = []
-        active_mots = [MOT_FILTER_MAP[m.lower()] for m in mot_filter if m.lower() in MOT_FILTER_MAP] if mot_filter else []
-        if "CityBus" in active_mots: active_mots.append("RegionalBus")
+        
+        # 3. Filter-Vorbereitung (Unterstützt Listen für "zug")
+        active_mots = []
+        if mot_filter:
+            for m in mot_filter:
+                mapped = MOT_FILTER_MAP.get(m.lower())
+                if isinstance(mapped, list):
+                    active_mots.extend(mapped)
+                elif mapped:
+                    active_mots.append(mapped)
 
         for dep in data.get("Departures", []):
             platform = dep.get("Platform", {}).get("Name", "")
             mot_type = dep.get("Mot", "Default")
+            
+            # Filter: Gleis
             if platform_filter and platform != platform_filter: continue
+            
+            # Filter: Verkehrsmittel (Prüft ob mot_type in der Liste der erlaubten Typen ist)
             if active_mots and mot_type not in active_mots: continue
             
+            # Zeit-Parsing
             sch_dt = parse_vvo_date(dep.get("ScheduledTime"))
             rt_str = dep.get("RealTime")
             real_dt = parse_vvo_date(rt_str) if rt_str else sch_dt
+            
             if not real_dt or not sch_dt: continue
 
-            # --- ZEITBERECHNUNG MIT RUNDUNG ---
+            # --- ZEITBERECHNUNG MIT KAUFMÄNNISCHER RUNDUNG ---
             diff_sec = (real_dt - now).total_seconds()
-            # Wir runden kaufmännisch: +30 Sek addieren vor Ganzzahl-Umwandlung
+            # Wir addieren 30 Sek vor der Division durch 60, um korrekt zu runden
             diff_min = int((diff_sec + 30) / 60)
             
-            # Stern-Logik: Verspätung/Abweichung prüfen (> 30 Sek)
+            # Stern-Logik: Vergleich Realzeit mit Fahrplanzeit (> 30 Sek Abweichung)
             has_offset = abs((real_dt - sch_dt).total_seconds()) > 30 
             
-            if diff_sec < 45: # Etwas Puffer für "jetzt"
+            if diff_sec < 45: # Puffer für "jetzt" Anzeige
                 time_label = "jetzt"
             else:
                 time_label = f"{diff_min} min"
@@ -82,9 +113,12 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
             if has_offset:
                 time_label += "*"
             
+            # Ziel-Text Formatierung
             destination = dep.get('Direction', '')
             if not platform_filter and platform:
-                destination = f"Gl.{platform} {destination}"
+                # Unterscheidung Gleis (Bahn) vs. Steig (Bus/Tram)
+                label = "Gl." if mot_type in ["Train", "RegionalTrain", "SuburbanRailway"] else "St."
+                destination = f"{label}{platform} {destination}"
 
             departures.append({
                 "time": time_label,
@@ -93,10 +127,13 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
                 "icon": ICON_MAP.get(mot_type, ICON_MAP["Default"]),
                 "is_urgent": diff_min <= 2
             })
+            
         return departures[:5], actual_name
+
     except Exception as e:
-        print(f"Fehler: {e}")
+        print(f"Fehler in get_vvo_departures: {e}")
         return [], station_name
+    
 
 def run():
     client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
