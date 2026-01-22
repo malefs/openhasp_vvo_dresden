@@ -8,14 +8,17 @@ import argparse
 # --- PARAMETER-STEUERUNG ---
 parser = argparse.ArgumentParser(description='VVO Abfahrtsmonitor für openHASP (480px) - 5 Zeilen')
 parser.add_argument('station', type=str, help='Name der Haltestelle https://www.vvo-mobil.de/#/timetables/results')   
+parser.add_argument('-d', '--device', type=str, default="plate", help='Name des Displays (Node Name in openHASP)')
 parser.add_argument('-b', '--host', type=str, default="127.0.0.1", help='MQTT Broker IP')
+parser.add_argument('-u', '--user', type=str, help='MQTT Username')
+parser.add_argument('-P', '--password', type=str, help='MQTT Passwort')
 parser.add_argument('--gleis', type=str, default=None, help='Optionale Gleisnummer')
 parser.add_argument('--filter', nargs='+', help='Filter: tram bus s zug')
 parser.add_argument('--page', type=int, default=1, help='Display-Seite (p1, p2, etc.)')
 args = parser.parse_args()
 
 MQTT_BROKER = args.host
-MQTT_TOPIC_BASE = f"hasp/plate/command/p{args.page}b"
+MQTT_TOPIC_BASE = f"hasp/{args.device}/command/p{args.page}b"
 
 COLOR_URGENT = "#FF0000"
 COLOR_NORMAL = "#7F8C8D"
@@ -36,7 +39,7 @@ ICON_MAP = {
     "SuburbanRailway": "L:/ico-metropolitan-railway.png", 
     "RegionalTrain": "L:/ico-train.png", 
     "Train": "L:/ico-train.png", # Wichtig für IC/RE
-    "Default": "L:/ico-tram.png"
+    "Default": "L:/ico-train.png"
 }
 
 def parse_vvo_date(vvo_date):
@@ -137,8 +140,16 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
 
 def run():
     client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
+    
+    # Login nur setzen, wenn User und Passwort angegeben wurden
+    if args.user and args.password:
+        client.username_pw_set(args.user, args.password)
+
+    
     client.connect(MQTT_BROKER, 1883, 60)
     client.loop_start()
+
+
 
     while True:
         deps, station_full_name = get_vvo_departures(args.station, args.gleis, args.filter)
