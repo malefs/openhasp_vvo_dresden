@@ -4,6 +4,7 @@ from paho.mqtt.enums import CallbackAPIVersion
 from datetime import datetime, timezone
 import time
 import argparse
+import re 
 
 # --- PARAMETER-STEUERUNG ---
 parser = argparse.ArgumentParser(description='VVO Abfahrtsmonitor für openHASP (480px) - 5 Zeilen')
@@ -24,23 +25,63 @@ COLOR_URGENT = "#FF0000"
 COLOR_NORMAL = "#7F8C8D"
 
 
-# Jetzt wird bei "--filter zug" sowohl Regionalzug als auch Fernzug (Train) gefunden
+# --- MOT-FILTER ---
+# Hier definierst du, welche API-Begriffe zu welcher Gruppe gehören
 MOT_FILTER_MAP = {
     "tram": "Tram", 
-    "bus": "CityBus", 
+    "bus": ["CityBus", "RegionalBus", "Bus", "SchoolBus", "BusOnRequest", "IntercityBus", "ClockBus","PlusBus"], 
     "s": "SuburbanRailway", 
-    "zug": ["RegionalTrain", "Train", "RegionalBus"] 
+    "zug": ["RegionalTrain", "Train"],
+    "faehre": "Ferry"
 }
 
+# --- ICON-MAP ---
+# Hier verknüpfst du die Gruppen/Mots mit deinen Dateien auf dem Display
 ICON_MAP = {
-    "Tram": "L:/ico-tram.png", 
-    "CityBus": "L:/ico-bus.png", 
+    "Tram": "L:/ico-tram.png",
+    "CityBus": "L:/ico-bus.png",
     "RegionalBus": "L:/ico-bus.png",
-    "SuburbanRailway": "L:/ico-metropolitan-railway.png", 
-    "RegionalTrain": "L:/ico-train.png", 
-    "Train": "L:/ico-train.png", # Wichtig für IC/RE
+    "SchoolBus": "L:/school-bus.png",
+    "ClockBus": "L:/clock-bus.png",
+    "PlusBus": "L:/ico-plus-bus.png",
+    "IntercityBus": "L:/ico-bus.png", # SEV bleibt Bus-Icon
+    "BusOnRequest": "L:/busOnRequest.png",  # Dein Rufbus-Icon
+    "Ferry": "L:/ferry-colored.png",        # Dein Fähren-Icon
+    "SuburbanRailway": "L:/ico-metropolitan-railway.png",
+    "RegionalTrain": "L:/ico-train.png",
+    "Train": "L:/ico-train.png",
     "Default": "L:/ico-train.png"
 }
+
+
+def get_clean_display_name(stadt, halt):
+    """Baut aus Stadt und Haltestelle einen sauberen Namen für das Display."""
+    # 1. Stadt säubern für den Vergleich (z.B. "Plauen (Vogtl)" -> "plauen")
+    stadt_simple = re.sub(r'\(.*?\)', '', stadt).strip().lower()
+    
+    # 2. Prüfen: Ist die Stadt bereits im Haltestellennamen enthalten?
+    if stadt_simple in halt.lower():
+        # Fall Jocketa: "Jocketa" ist in "Jocketa, Bahnhof" -> nimm nur den Halt
+        name = halt
+    else:
+        # Fall Plauen: "Plauen" fehlt in "oberer Bahnhof" -> kombiniere beides
+        name = f"{stadt} {halt}"
+
+    # 3. Abkürzungen anwenden
+    replacements = {
+        r"\boberer Bahnhof\b": "Ob. Bf.",
+        r"\bunterer Bahnhof\b": "Unt. Bf.",
+        r"\bHauptbahnhof\b": "Hbf.",
+        r"\bBahnhof\b": "Bf.",
+        r",": "",  # Entfernt Komma bei "Jocketa, Bahnhof"
+    }
+    
+    for pattern, replacement in replacements.items():
+        name = re.sub(pattern, replacement, name, flags=re.IGNORECASE)
+    
+    # 4. Doppelte Leerzeichen entfernen und trimmen
+    return re.sub(r'\s+', ' ', name).strip()
+
 
 def parse_vvo_date(vvo_date):
     if not vvo_date: return None
@@ -53,11 +94,19 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
     try:
         # 1. Haltestellen-ID (StopID) finden
         r = requests.post("https://webapi.vvo-online.de/tr/pointfinder?format=json", 
-                         json={"query": station_name, "stopsOnly": True, "limit": 1}, timeout=10)
+	                 json={"query": station_name, "stopsOnly": True, "limit": 1}, timeout=10)
         points = r.json().get("Points", [])
-        if not points: return [], "Unbekannt"
-        
-        stopid, _, _, actual_name = points[0].split("|")[0:4]
+
+        if not points: 
+            return [], "Unbekannt"
+
+        # Den String zerlegen (VVO Format: ID|Typ|Stadt|Halt|...)
+        parts = points[0].split("|")
+        stopid = parts[0]
+
+    	# --- HIER DIE FUNKTION AUFRUFEN ---
+        actual_name = get_clean_display_name(parts[2], parts[3])
+
 
         # 2. Abfahrtsdaten abrufen
         payload = {
@@ -69,7 +118,8 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
         }
         res = requests.post("https://webapi.vvo-online.de/dm?format=json", json=payload, timeout=10)
         data = res.json()
-        
+
+        #print(data)        
         now = datetime.now(timezone.utc)
         departures = []
         
@@ -86,7 +136,7 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
         for dep in data.get("Departures", []):
             platform = dep.get("Platform", {}).get("Name", "")
             mot_type = dep.get("Mot", "Default")
-            
+            print(dep)
             # Filter: Gleis
             if platform_filter and platform != platform_filter: continue
             
@@ -140,25 +190,25 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
 
 def run():
     client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
-    
+
     # Login nur setzen, wenn User und Passwort angegeben wurden
     if args.user and args.password:
         client.username_pw_set(args.user, args.password)
 
-    
     client.connect(MQTT_BROKER, 1883, 60)
     client.loop_start()
-
-
 
     while True:
         deps, station_full_name = get_vvo_departures(args.station, args.gleis, args.filter)
         now_dt = datetime.now()
-        
-        display_name = f"{station_full_name} Gl.{args.gleis}" if args.gleis else station_full_name
+        print(station_full_name)
+
+        # Falls ein Gleis gefiltert wird, hängen wir es an den sauberen Namen an
+        display_name = f"{clean_name} Gl.{args.gleis}" if args.gleis else station_full_name
 
         print(f"\n[{now_dt.strftime('%H:%M:%S')}] --- P{args.page}: {display_name} (Broker: {MQTT_BROKER}) ---")
         
+        # Senden an das Display (Icon \uE70E ist das Bahnhof-Symbol)
         client.publish(f"{MQTT_TOPIC_BASE}1.text", f"\uE70E {display_name}")
         client.publish(f"{MQTT_TOPIC_BASE}99.text", f"update: {now_dt.strftime('%H:%M')}")
 
