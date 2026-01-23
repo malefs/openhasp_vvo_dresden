@@ -21,8 +21,17 @@ args = parser.parse_args()
 MQTT_BROKER = args.host
 MQTT_TOPIC_BASE = f"hasp/{args.device}/command/p{args.page}b"
 
-COLOR_URGENT = "#FF0000"
-COLOR_NORMAL = "#7F8C8D"
+
+# --- KONFIGURATION (Global oder vor run()) ---
+COL_X = {"time": 10, "icon": 85, "line": 165, "dest": 220}
+MAX_CHARS = 15
+SCROLL_TYPE = "scroll"
+DEFAULT_TYPE = "crop"
+
+# Farben (HEX)
+COLOR_NORMAL = "#7F8C8D"  # Grau/Weiß
+COLOR_URGENT = "#FFA500"  # Orange (< 2 min)
+COLOR_DELAY  = "#FF0000"  # Rot (Verspätung)
 
 
 # --- MOT-FILTER ---
@@ -190,47 +199,89 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
         print(f"Fehler in get_vvo_departures: {e}")
         return [], station_name
 
-    
-
 def run():
     client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
 
-    # Login nur setzen, wenn User und Passwort angegeben wurden
     if args.user and args.password:
         client.username_pw_set(args.user, args.password)
 
     client.connect(MQTT_BROKER, 1883, 60)
     client.loop_start()
 
+    # --- INITIALISIERUNG ---
+    print(f"Initialisiere Layout auf {MQTT_BROKER}...")
+    for i in range(5):
+        base_id = 11 + (i * 10)
+        client.publish(f"{MQTT_TOPIC_BASE}{base_id}.x", COL_X["time"])
+        client.publish(f"{MQTT_TOPIC_BASE}{base_id+1}.x", COL_X["icon"])
+        client.publish(f"{MQTT_TOPIC_BASE}{base_id+2}.x", COL_X["line"])
+        client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.x", COL_X["dest"])
+        client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.w", 230)
+        time.sleep(0.05)
+
     while True:
-        deps, station_full_name = get_vvo_departures(args.station, args.gleis, args.filter)
-        now_dt = datetime.now()
-        print(station_full_name)
+        try:
+            deps, station_full_name = get_vvo_departures(args.station, args.gleis, args.filter)
+            now_dt = datetime.now()
+            
+            display_name = f"{station_full_name} Gl.{args.gleis}" if args.gleis else station_full_name
+            
+            print(f"\n[{now_dt.strftime('%H:%M:%S')}] --- Station: {display_name} ---")
+            print(f"{'Zeit':<10} | {'Linie':<5} | {'Mode':<6} | {'Ziel'}")
+            print("-" * 60)
 
-        # Falls ein Gleis gefiltert wird, hängen wir es an den sauberen Namen an
-        display_name = f"{clean_name} Gl.{args.gleis}" if args.gleis else station_full_name
+            # Header & Footer
+            client.publish(f"{MQTT_TOPIC_BASE}1.text", f"\uE70E {display_name}")
+            client.publish(f"{MQTT_TOPIC_BASE}99.text", f"update: {now_dt.strftime('%H:%M')}")
 
-        print(f"\n[{now_dt.strftime('%H:%M:%S')}] --- P{args.page}: {display_name} (Broker: {MQTT_BROKER}) ---")
-        
-        # Senden an das Display (Icon \uE70E ist das Bahnhof-Symbol)
-        client.publish(f"{MQTT_TOPIC_BASE}1.text", f"\uE70E {display_name}")
-        client.publish(f"{MQTT_TOPIC_BASE}99.text", f"update: {now_dt.strftime('%H:%M')}")
+            for i in range(5):
+                base_id = 11 + (i * 10)
+                
+                if i < len(deps):
+                    d = deps[i]
+                    dest_text = d['direction']
+                    
+                    # Sichtbarkeit
+                    for off in [0, 1, 2, 3]: client.publish(f"{MQTT_TOPIC_BASE}{base_id+off}.hidden", 0)
 
-        for i in range(5):
-            base_id = 11 + (i * 10)
-            if i < len(deps):
-                d = deps[i]
-                print(f"{d['time']:<10} | {d['line']:<3} | {d['direction']}")
-                for off in [0, 1, 2, 3]: client.publish(f"{MQTT_TOPIC_BASE}{base_id+off}.hidden", 0)
-                client.publish(f"{MQTT_TOPIC_BASE}{base_id}.text", d['time'])
-                client.publish(f"{MQTT_TOPIC_BASE}{base_id}.text_color", COLOR_URGENT if d['is_urgent'] else COLOR_NORMAL)
-                client.publish(f"{MQTT_TOPIC_BASE}{base_id+1}.src", d['icon'])
-                client.publish(f"{MQTT_TOPIC_BASE}{base_id+2}.text", d['line'])
-                client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.text", d['direction'][:22])
-            else:
-                for off in [0, 1, 2, 3]: client.publish(f"{MQTT_TOPIC_BASE}{base_id+off}.hidden", 1)
-        
+                    # Zeit & Farbe bestimmen
+                    t_color = COLOR_NORMAL
+                    c_name = "NORMAL"
+                    if d.get('is_delayed'):
+                        t_color = COLOR_DELAY
+                        c_name = "DELAY (RED)"
+                    elif d.get('is_urgent'):
+                        t_color = COLOR_URGENT
+                        c_name = "URGENT (ORANGE)"
+                    
+                    client.publish(f"{MQTT_TOPIC_BASE}{base_id}.text", d['time'])
+                    client.publish(f"{MQTT_TOPIC_BASE}{base_id}.text_color", t_color)
+
+                    # Icon & Linie
+                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+1}.src", d['icon'])
+                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+2}.text", d['line'])
+
+                    # Scroll-Logik
+                    mode = SCROLL_TYPE if len(dest_text) > MAX_CHARS else DEFAULT_TYPE
+                    final_dest = dest_text + "  +++  " if mode == "loop" else dest_text
+
+                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.mode", mode)
+                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.text", final_dest)
+                    
+                    # Konsolenausgabe für dich zur Kontrolle
+                    print(f"{d['time']:<10} | {d['line']:<5} | {mode:<6} | {dest_text} ({c_name})")
+                    
+                    time.sleep(0.02)
+                else:
+                    # Zeile ausblenden & in Konsole vermerken
+                    for off in [0, 1, 2, 3]: client.publish(f"{MQTT_TOPIC_BASE}{base_id+off}.hidden", 1)
+                    print(f"{'---':<10} | {'---':<5} | {'---':<6} | (leer)")
+
+        except Exception as e:
+            print(f"!!! FEHLER IM LOOP: {e}")
+
         time.sleep(30)
+
 
 if __name__ == "__main__":
     run()
