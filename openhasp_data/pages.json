@@ -1,369 +1,80 @@
-{"page":0,"comment":"---------- Global auf allen Seiten ----------"}
-{"comment":"---------- Kopfzeile ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":350,"h":35,"align":"left","text":"00:00","text_font":24,"comment":"Datum/Uhrzeit"}
-{"comment":"---------- Fusszeile ----------"}
-{"id":2,"obj":"btn","x":0,"y":445,"w":250,"h":35,"bg_color":"#fe8f58","bg_color02":"#d8864c","bg_grad_dir":0,"text_color":"#ffffff","radius":0,"border_side":0,"text":"\uE141","action":{"down":"page prev"}}
-{"id":3,"obj":"btn","x":250,"y":445,"w":300,"h":35,"bg_color":"#fe8f58","bg_color02":"#d8864c","bg_grad_dir":0,"text_color":"#ffffff","radius":0,"border_side":0,"text":"\uE2DC","action":{"down":"page back","hold":"restart"}}
-{"id":4,"obj":"btn","x":550,"y":445,"w":250,"h":35,"bg_color":"#fe8f58","bg_color02":"#d8864c","bg_grad_dir":0,"text_color":"#ffffff","radius":0,"border_side":0,"text":"\uE142","action":{"down":"page next"}}
-{"comment":"---------- Seitenlimit ----------"}
-{"page":1,"id":0,"prev":7}
-{"page":7,"id":0,"next":1}
+// --- PAGE 1: Hauptabfahrten ---
+{"page":1,"id":1,"obj":"btn","x":0,"y":0,"w":480,"h":60,"text":"\uE70E Abfahrten P1","text_font":32,"bg_color":"#2C3E50","radius":0}
+{"page":1,"id":20,"obj":"label","x":0,"y":60,"w":480,"h":40,"text":"      Zeit       Typ  Linie              Ziel","text_font":24,"bg_color":"#555555","bg_opa":255,"text_color":"#FFFFFF"}
+{"page":1,"id":3,"obj":"obj","x":5,"y":105,"w":470,"h":550,"bg_color":"#ECF0F1","bg_opa":255,"radius":8,"click":0}
 
-{"page":1,"comment":"---------- Übersicht ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"align":"center","bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","text":"Übersicht","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
-{"comment":"Kein 'action' verwenden, sonst funktioniert 'event:' für dieses Object in HA nicht. Seitenwechsel in HA ausführen."}
-{"id":10,"obj":"obj","x":20,"y":55,"w":370,"h":110,"radius":20,"click":true,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32}
-{"id":11,"obj":"label","parentid":10,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Home"}
-{"id":12,"obj":"label","parentid":10,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":13,"obj":"label","parentid":10,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
-{"id":14,"obj":"label","parentid":10,"x":315,"y":5,"w":45,"h":45,"click":1,"align":"center","text":"\uF054","text_font":38}
-{"id":15,"obj":"label","parentid":10,"x":315,"y":5,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-12,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":16,"obj":"label","parentid":10,"x":315,"y":60,"w":45,"h":45,"click":1,"align":"center","text":"\uE09A","text_font":38}
-{"id":17,"obj":"label","parentid":10,"x":315,"y":60,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-12,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":20,"obj":"obj","x":410,"y":55,"w":370,"h":110,"radius":20,"click":true,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32,"action":{"down":"page 3"}}
-{"id":21,"obj":"label","parentid":20,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Wetter"}
-{"id":22,"obj":"label","parentid":20,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":23,"obj":"label","parentid":20,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
-{"id":30,"obj":"obj","x":20,"y":185,"w":240,"h":110,"radius":20,"click":true,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32,"action":{"down":"page 4"}}
-{"id":31,"obj":"label","parentid":30,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Arbeitszimmer","click":0}
-{"id":32,"obj":"label","parentid":30,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":33,"obj":"label","parentid":30,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
-{"id":40,"obj":"obj","x":280,"y":185,"w":240,"h":110,"radius":20,"click":true,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32,"action":{"down":"page 5"}}
-{"id":41,"obj":"label","parentid":40,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Küche"}
-{"id":42,"obj":"label","parentid":40,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":43,"obj":"label","parentid":40,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
-{"id":50,"obj":"obj","x":540,"y":185,"w":240,"h":110,"radius":20,"click":true,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32,"action":{"down":"page 6"}}
-{"id":51,"obj":"label","parentid":50,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Schlafzimmer"}
-{"id":52,"obj":"label","parentid":50,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":53,"obj":"label","parentid":50,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
-{"id":54,"obj":"label","parentid":50,"x":200,"y":10,"w":30,"h":30,"click":0,"hidden":true,"text":"\uDB84\uDDDC","text_font":"mdi30"}
-{"id":60,"obj":"obj","x":20,"y":315,"w":240,"h":110,"radius":20,"click":true,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32,"action":{"down":"page 7"}}
-{"id":61,"obj":"label","parentid":60,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Keller"}
-{"id":62,"obj":"label","parentid":60,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":63,"obj":"label","parentid":60,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
-{"id":64,"obj":"label","parentid":60,"x":200,"y":10,"w":30,"h":30,"click":0,"hidden":true,"text":"\uDB85\uDD03","text_font":"mdi30"}
-{"id":70,"obj":"obj","x":280,"y":315,"w":240,"h":110,"radius":20,"click":0,"bg_opa":128,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32,"action":{"down":"page 8"}}
-{"id":71,"obj":"label","parentid":70,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Raum8"}
-{"id":72,"obj":"label","parentid":70,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":73,"obj":"label","parentid":70,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
-{"id":80,"obj":"obj","x":540,"y":315,"w":240,"h":110,"radius":20,"click":0,"bg_opa":128,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","outline_color":"#ffff00","outline_width":0,"text_color":"#ffffff","text_font":32,"action":{"down":"page 9"}}
-{"id":81,"obj":"label","parentid":80,"x":10,"y":10,"w":220,"h":45,"click":0,"text":"Raum9"}
-{"id":82,"obj":"label","parentid":80,"x":10,"y":55,"w":45,"h":45,"click":0,"text":"\uE50F"}
-{"id":83,"obj":"label","parentid":80,"x":55,"y":55,"w":175,"h":45,"click":0,"text":"0.0 °C"}
+/* ZEILE 1 bis 5 für Page 1 */
+{"page":1,"id":11,"obj":"label","parentid":3,"x":10,"y":15,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":1,"id":12,"obj":"img","parentid":3,"x":85,"y":-20,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":1,"id":13,"obj":"label","parentid":3,"x":165,"y":15,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":1,"id":14,"obj":"label","parentid":3,"x":240,"y":15,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"page":2,"comment":"---------- Home ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Home","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
-{"id":3,"obj":"tabview","x":0,"y":35,"w":800,"btn_pos":0,"bg_opa":0,"border_side":0}
-{"id":4,"obj":"tab","parentid":3}
-{"id":5,"obj":"tab","parentid":3}
-{"id":6,"obj":"tab","parentid":3}
-{"id":10,"obj":"img","parentid":4,"x":35,"y":0,"src":"","auto_size":1}
-{"id":20,"obj":"img","parentid":5,"x":35,"y":0,"src":"","auto_size":1}
-{"id":30,"obj":"img","parentid":6,"x":35,"y":0,"src":"","auto_size":1}
+{"page":1,"id":21,"obj":"label","parentid":3,"x":10,"y":75,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":1,"id":22,"obj":"img","parentid":3,"x":85,"y":40,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":1,"id":23,"obj":"label","parentid":3,"x":165,"y":75,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":1,"id":24,"obj":"label","parentid":3,"x":240,"y":75,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"page":3,"comment":"----------- Wetterseite ------- "}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Wetter","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
-{"comment":"----------- Wetter Kachel ------- "}
-{"id":3,"obj":"obj","x":70,"y":35,"w":660,"h":415,"border_side":0,"bg_grad_dir":0}
-{"id":4,"obj":"tabview","parentid":3,"btn_pos":0,"bg_opa":0,"border_side":0}
-{"id":5,"obj":"tab","parentid":4}
-{"id":6,"obj":"tab","parentid":4}
-{"comment":" ----------- Heute ------------"}
-{"id":11,"obj":"label","parentid":3,"x":20,"y":10,"w":85,"h":85,"align":"right","text":"\uE2DA","click":0,"text_font":80,"text_color":"#00008b"}
-{"id":12,"obj":"label","parentid":3,"x":150,"y":10,"w":130,"h":25,"align":"right","text":"Temperatur","text_font":20,"text_color":"#00008b"}
-{"id":13,"obj":"label","parentid":3,"x":150,"y":34,"w":130,"h":35,"align":"right","text":"0.0 °C","text_font":32,"text_color":"#00008b"}
-{"id":14,"obj":"label","parentid":3,"x":330,"y":10,"w":130,"h":25,"align":"right","text":"Tiefsttemperatur","text_font":20,"text_color":"#00008b"}
-{"id":15,"obj":"label","parentid":3,"x":330,"y":34,"w":130,"h":35,"align":"right","text":"0.0 °C","text_font":32,"text_color":"#00008b"}
-{"id":16,"obj":"label","parentid":3,"x":140,"y":78,"w":30,"h":30,"align":"left","text":"\uE59D","text_font":25,"text_color":"#00008b"}
-{"id":17,"obj":"label","parentid":3,"x":510,"y":10,"w":130,"h":25,"align":"right","text":"Luftfeuchtigkeit","text_font":20,"text_color":"#00008b"}
-{"id":18,"obj":"label","parentid":3,"x":510,"y":34,"w":130,"h":35,"align":"right","text":"0 %","text_font":32,"text_color":"#00008b"}
-{"id":19,"obj":"label","parentid":3,"x":160,"y":78,"w":130,"h":30,"align":"right","text":"km/h","text_font":24,"text_color":"#00008b"}
-{"id":20,"obj":"label","parentid":3,"x":300,"y":78,"w":150,"h":35,"align":"left","text":"Windrichtung","text_font":28,"text_color":"#00008b"}
-{"id":21,"obj":"label","parentid":3,"x":490,"y":78,"w":30,"h":30,"align":"right","text":"\uE597","text_font":25,"text_color":"#00008b"}
-{"id":22,"obj":"label","parentid":3,"x":520,"y":78,"w":120,"h":30,"align":"right","text":"0.0 L/m²","text_font":24,"text_color":"#00008b"}
-{"id":23,"obj":"label","parentid":3,"x":20,"y":105,"w":150,"h":25,"align":"right","text":"Wetter in Text, ","text_font":20,"text_color":"#00008b"}
-{"id":24,"obj":"label","parentid":3,"x":173,"y":105,"w":150,"h":25,"align":"left","text":"Wind in Text","text_font":20,"text_color":"#00008b"}
-{"comment":" ----------- Aussichten Tage ------------"}
-{"id":41,"obj":"label","parentid":5,"x":20,"y":135,"w":80,"h":15,"align":"right","text":"Wochentag","click":0,"text_font":10,"text_color":"#00008b"}
-{"id":42,"obj":"label","parentid":5,"x":170,"y":135,"w":80,"h":15,"align":"right","text":"Höchsttemperatur","text_font":10,"text_color":"#00008b"}
-{"id":43,"obj":"label","parentid":5,"x":300,"y":135,"w":80,"h":15,"align":"right","text":"Tiefsttemperatur","text_font":10,"text_color":"#00008b"}
-{"id":44,"obj":"label","parentid":5,"x":430,"y":135,"w":80,"h":15,"align":"right","text":"Luftfeuchtigkeit","text_font":10,"text_color":"#00008b"}
-{"id":47,"obj":"label","parentid":5,"x":560,"y":135,"w":80,"h":15,"align":"right","text":"Himmel","text_font":10,"text_color":"#00008b"}
-{"id":51,"obj":"label","parentid":5,"x":20,"y":150,"w":150,"h":35,"align":"left","text":"date+1","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":52,"obj":"label","parentid":5,"x":170,"y":160,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":53,"obj":"label","parentid":5,"x":300,"y":160,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":54,"obj":"label","parentid":5,"x":430,"y":160,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":55,"obj":"label","parentid":5,"x":560,"y":150,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":61,"obj":"label","parentid":5,"x":20,"y":200,"w":150,"h":35,"align":"left","text":"date+2","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":62,"obj":"label","parentid":5,"x":170,"y":210,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":63,"obj":"label","parentid":5,"x":300,"y":210,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":64,"obj":"label","parentid":5,"x":430,"y":210,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":65,"obj":"label","parentid":5,"x":560,"y":200,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":71,"obj":"label","parentid":5,"x":20,"y":250,"w":150,"h":35,"align":"left","text":"date+3","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":72,"obj":"label","parentid":5,"x":170,"y":260,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":73,"obj":"label","parentid":5,"x":300,"y":260,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":74,"obj":"label","parentid":5,"x":430,"y":260,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":75,"obj":"label","parentid":5,"x":560,"y":250,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":81,"obj":"label","parentid":5,"x":20,"y":300,"w":150,"h":35,"align":"left","text":"date+4","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":82,"obj":"label","parentid":5,"x":170,"y":310,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":83,"obj":"label","parentid":5,"x":300,"y":310,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":84,"obj":"label","parentid":5,"x":430,"y":310,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":85,"obj":"label","parentid":5,"x":560,"y":300,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":91,"obj":"label","parentid":5,"x":20,"y":350,"w":150,"h":35,"align":"left","text":"date+5","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":92,"obj":"label","parentid":5,"x":170,"y":360,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":93,"obj":"label","parentid":5,"x":300,"y":360,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":94,"obj":"label","parentid":5,"x":430,"y":360,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":95,"obj":"label","parentid":5,"x":560,"y":350,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"comment":" ----------- Aussichten Stunden ------------"}
-{"id":141,"obj":"label","parentid":6,"x":20,"y":135,"w":80,"h":15,"align":"right","text":"Uhrzeit","click":0,"text_font":10,"text_color":"#00008b"}
-{"id":142,"obj":"label","parentid":6,"x":170,"y":135,"w":80,"h":15,"align":"right","text":"Temperatur","text_font":10,"text_color":"#00008b"}
-{"id":143,"obj":"label","parentid":6,"x":300,"y":135,"w":80,"h":15,"align":"right","text":"Luftfeuchtigkeit","text_font":10,"text_color":"#00008b"}
-{"id":144,"obj":"label","parentid":6,"x":430,"y":135,"w":80,"h":15,"align":"right","text":"Wolkendecke","text_font":10,"text_color":"#00008b"}
-{"id":147,"obj":"label","parentid":6,"x":560,"y":135,"w":80,"h":15,"align":"right","text":"Himmel","text_font":10,"text_color":"#00008b"}
-{"id":151,"obj":"label","parentid":6,"x":20,"y":150,"w":150,"h":35,"align":"left","text":"time+1","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":152,"obj":"label","parentid":6,"x":170,"y":160,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":153,"obj":"label","parentid":6,"x":300,"y":160,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":154,"obj":"label","parentid":6,"x":430,"y":160,"w":80,"h":25,"align":"right","text":"0.0 %","text_font":20,"text_color":"#00008b"}
-{"id":155,"obj":"label","parentid":6,"x":560,"y":150,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":161,"obj":"label","parentid":6,"x":20,"y":200,"w":150,"h":35,"align":"left","text":"time+2","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":162,"obj":"label","parentid":6,"x":170,"y":210,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":163,"obj":"label","parentid":6,"x":300,"y":210,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":164,"obj":"label","parentid":6,"x":430,"y":210,"w":80,"h":25,"align":"right","text":"0.0 %","text_font":20,"text_color":"#00008b"}
-{"id":165,"obj":"label","parentid":6,"x":560,"y":200,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":171,"obj":"label","parentid":6,"x":20,"y":250,"w":150,"h":35,"align":"left","text":"time+3","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":172,"obj":"label","parentid":6,"x":170,"y":260,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":173,"obj":"label","parentid":6,"x":300,"y":260,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":174,"obj":"label","parentid":6,"x":430,"y":260,"w":80,"h":25,"align":"right","text":"0.0 %","text_font":20,"text_color":"#00008b"}
-{"id":175,"obj":"label","parentid":6,"x":560,"y":250,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":181,"obj":"label","parentid":6,"x":20,"y":300,"w":150,"h":35,"align":"left","text":"time+4","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":182,"obj":"label","parentid":6,"x":170,"y":310,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":183,"obj":"label","parentid":6,"x":300,"y":310,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":184,"obj":"label","parentid":6,"x":430,"y":310,"w":80,"h":25,"align":"right","text":"0.0 %","text_font":20,"text_color":"#00008b"}
-{"id":185,"obj":"label","parentid":6,"x":560,"y":300,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
-{"id":191,"obj":"label","parentid":6,"x":20,"y":350,"w":150,"h":35,"align":"left","text":"time+5","click":0,"text_font":30,"text_color":"#00008b"}
-{"id":192,"obj":"label","parentid":6,"x":170,"y":360,"w":80,"h":25,"align":"right","text":"0.0 °C","text_font":20,"text_color":"#00008b"}
-{"id":193,"obj":"label","parentid":6,"x":300,"y":360,"w":80,"h":25,"align":"right","text":"0 %","text_font":20,"text_color":"#00008b"}
-{"id":194,"obj":"label","parentid":6,"x":430,"y":360,"w":80,"h":25,"align":"right","text":"0.0 %","text_font":20,"text_color":"#00008b"}
-{"id":195,"obj":"label","parentid":6,"x":560,"y":350,"w":80,"h":45,"text":"\uE2DA","click":0,"text_font":40,"text_color":"#00008b","align":"right"}
+{"page":1,"id":31,"obj":"label","parentid":3,"x":10,"y":135,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":1,"id":32,"obj":"img","parentid":3,"x":85,"y":100,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":1,"id":33,"obj":"label","parentid":3,"x":165,"y":135,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":1,"id":34,"obj":"label","parentid":3,"x":240,"y":135,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"page":4,"comment":"---------- Arbeitszimmer ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Arbeitszimmer","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
-{"comment":"---------- Heizungsthermostat Kachel ---------"}
-{"id":3,"obj":"obj","x":10,"y":50,"w":380,"h":380,"click":0,"border_side":0,"bg_grad_dir":0,"border_width":0}
-{"comment":"---------- Heizungsthermostat Bogen ----------"}
-{"id":4,"obj":"arc","parentid":3,"x":0,"y":0,"w":380,"h":380,"min":50,"max":300,"val":200,"adjustable":true,"border_opa":0,"bg_opa":0,"line_width":38,"line_width10":38,"line_color10":"#fe8f58"}
-{"id":5,"obj":"gauge","parentid":4,"x":0,"y":0,"w":380,"h":380,"min":50,"max":300,"val":200,"enabled":"false","format":1,"critical_value":301,"label_count":6,"line_count":26,"pad_top":2,"pad_bottom":2,"pad_left":2,"pad_right":2,"border_width":0,"text_font":18,"bg_opa":0,"bg_opa2":0,"line_opa2":0,"line_width":3,"line_width1":5,"line_color":"#348feb","line_color1":"#348feb","scale_grad_color":"#eb4934","scale_grad_color1":"#eb4934","scale_end_color1":"#eb4934"}
-{"comment":"---------- Heizungsthermostat Modus ----------"}
-{"id":6,"obj":"label","parentid":3,"x":0,"y":70,"w":380,"h":20,"align":"center","text":"Offline","text_font":18,"text_color":"#00008b"}
-{"comment":"---------- Heizungsthermostat Solltemperatur ----------"}
-{"id":7,"obj":"label","parentid":3,"x":0,"y":120,"w":380,"h":20,"align":"center","text":"Solltemperatur","text_font":18,"text_color":"#fe8f58"}
-{"id":8,"obj":"label","parentid":3,"x":0,"y":140,"w":380,"h":70,"align":"center","text":"0 °C","text_font":64,"text_color":"#fe8f58"}
-{"id":9,"obj":"label","parentid":3,"x":260,"y":140,"w":70,"h":70,"align":"center","text":"+","text_font":62,"text_color":"#d81b43"}
-{"id":10,"obj":"label","parentid":3,"x":50,"y":140,"w":70,"h":70,"align":"center","text":"-","text_font":62,"text_color":"#1f87e8"}
-{"comment":"---------- Heizungsthermostat Isttemperatur ----------"}
-{"id":11,"obj":"label","parentid":3,"x":0,"y":220,"w":380,"h":20,"align":"center","text":"Isttemperatur","text_font":18,"text_color":"#00008b"}
-{"id":12,"obj":"label","parentid":3,"x":0,"y":240,"w":380,"h":70,"align":"center","text":"0 °C","text_font":36,"text_color":"#00008b"}
-{"comment":"---------- Heizungsthermostat Button ----------"}
-{"id":13,"obj":"btn","parentid":3,"x":140,"y":340,"w":100,"h":40,"toggle":true,"radius":20,"bg_color":"#d2d2d2","bg_grad_color":"#75471a","border_color":"#838994","text":"\uE238"}
-{"comment":"---------- Bedienung und Information ---------"}
-{"id":20,"obj":"obj","x":410,"y":55,"w":370,"h":380,"click":0,"border_side":0,"border_width":0,"bg_grad_dir":0,"text_font":26}
-{"id":21,"obj":"obj","parentid":20,"x":0,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":22,"obj":"label","parentid":21,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Schreibtischlampe","text_font":22}
-{"id":23,"obj":"label","parentid":21,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE95F","text_font":38}
-{"id":24,"obj":"label","parentid":21,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":25,"obj":"obj","parentid":20,"x":195,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":26,"obj":"label","parentid":25,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"PC"}
-{"id":27,"obj":"label","parentid":25,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE322","text_font":38}
-{"id":28,"obj":"label","parentid":25,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":29,"obj":"linemeter","parentid":20,"x":60,"y":120,"w":250,"h":250,"angle":280,"min":0,"max":500,"val":0,"line_count":100,"bg_opa":0,"border_width":0,"scale_width":25,"line_width":10,"line_color":"#00ff00","scale_end_line_width":10,"scale_grad_color":"#ff0000","scale_end_color":"#d2d2d2","pad_top":2,"pad_bottom":2,"pad_left":2,"pad_right":2,"value_str":"PC / UPS","value_ofs_y":90,"value_font":20}
-{"id":30,"obj":"obj","parentid":29,"x":70,"y":70,"w":110,"h":100,"bg_opa":0,"text_font":20,"border_side":0,"border_width":0}
-{"id":31,"obj":"label","parentid":30,"x":70,"y":0,"w":40,"h":25,"align":"left","text":"W"}
-{"id":32,"obj":"label","parentid":30,"x":0,"y":0,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":33,"obj":"label","parentid":30,"x":70,"y":25,"w":40,"h":25,"align":"left","text":"V"}
-{"id":34,"obj":"label","parentid":30,"x":0,"y":25,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":35,"obj":"label","parentid":30,"x":70,"y":50,"w":40,"h":25,"align":"left","text":"A"}
-{"id":36,"obj":"label","parentid":30,"x":0,"y":50,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":37,"obj":"label","parentid":30,"x":70,"y":75,"w":40,"h":25,"align":"left","text":"kWh"}
-{"id":38,"obj":"label","parentid":30,"x":0,"y":75,"w":65,"h":25,"align":"right","text":"0.0"}
+{"page":1,"id":41,"obj":"label","parentid":3,"x":10,"y":195,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":1,"id":42,"obj":"img","parentid":3,"x":85,"y":160,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":1,"id":43,"obj":"label","parentid":3,"x":165,"y":195,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":1,"id":44,"obj":"label","parentid":3,"x":240,"y":195,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
-{"page":5,"comment":"---------- Küche ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Küche","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
-{"comment":"---------- Heizungsthermostat Kachel ---------"}
-{"id":3,"obj":"obj","x":10,"y":50,"w":380,"h":380,"click":0,"border_side":0,"bg_grad_dir":0,"border_width":0}
-{"comment":"---------- Heizungsthermostat Bogen ----------"}
-{"id":4,"obj":"arc","parentid":3,"x":0,"y":0,"w":380,"h":380,"min":50,"max":300,"val":200,"adjustable":true,"border_opa":0,"bg_opa":0,"line_width":38,"line_width10":38,"line_color10":"#fe8f58"}
-{"id":5,"obj":"gauge","parentid":4,"x":0,"y":0,"w":380,"h":380,"min":50,"max":300,"val":200,"enabled":"false","format":1,"critical_value":301,"label_count":6,"line_count":26,"pad_top":2,"pad_bottom":2,"pad_left":2,"pad_right":2,"border_width":0,"text_font":18,"bg_opa":0,"bg_opa2":0,"line_opa2":0,"line_width":3,"line_width1":5,"line_color":"#348feb","line_color1":"#348feb","scale_grad_color":"#eb4934","scale_grad_color1":"#eb4934","scale_end_color1":"#eb4934"}
-{"comment":"---------- Heizungsthermostat Modus ----------"}
-{"id":6,"obj":"label","parentid":3,"x":0,"y":70,"w":380,"h":20,"align":"center","text":"Offline","text_font":18,"text_color":"#00008b"}
-{"comment":"---------- Heizungsthermostat Solltemperatur ----------"}
-{"id":7,"obj":"label","parentid":3,"x":0,"y":120,"w":380,"h":20,"align":"center","text":"Solltemperatur","text_font":18,"text_color":"#fe8f58"}
-{"id":8,"obj":"label","parentid":3,"x":0,"y":140,"w":380,"h":70,"align":"center","text":"0 °C","text_font":64,"text_color":"#fe8f58"}
-{"id":9,"obj":"label","parentid":3,"x":260,"y":140,"w":70,"h":70,"align":"center","text":"+","text_font":62,"text_color":"#d81b43"}
-{"id":10,"obj":"label","parentid":3,"x":50,"y":140,"w":70,"h":70,"align":"center","text":"-","text_font":62,"text_color":"#1f87e8"}
-{"comment":"---------- Heizungsthermostat Isttemperatur ----------"}
-{"id":11,"obj":"label","parentid":3,"x":0,"y":220,"w":380,"h":20,"align":"center","text":"Isttemperatur","text_font":18,"text_color":"#00008b"}
-{"id":12,"obj":"label","parentid":3,"x":0,"y":240,"w":380,"h":70,"align":"center","text":"0 °C","text_font":36,"text_color":"#00008b"}
-{"comment":"---------- Heizungsthermostat Button ----------"}
-{"id":13,"obj":"btn","parentid":3,"x":140,"y":340,"w":100,"h":40,"toggle":true,"radius":20,"bg_color":"#d2d2d2","bg_grad_color":"#75471a","border_color":"#838994","text":"\uE238"}
-{"comment":"---------- Bedienung und Information ---------"}
-{"id":20,"obj":"obj","x":410,"y":55,"w":370,"h":380,"click":0,"border_side":0,"border_width":0,"bg_grad_dir":0,"text_font":26}
-{"id":21,"obj":"obj","parentid":20,"x":0,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":22,"obj":"label","parentid":21,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Küchenlicht"}
-{"id":23,"obj":"label","parentid":21,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uF1E1","text_font":38}
-{"id":24,"obj":"label","parentid":21,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":25,"obj":"obj","parentid":20,"x":195,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":26,"obj":"label","parentid":25,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Arbeitslicht"}
-{"id":27,"obj":"label","parentid":25,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE335","text_font":38}
-{"id":28,"obj":"label","parentid":25,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"comment":"---------- Küchenradio ---------"}
-{"id":30,"obj":"obj","parentid":20,"x":0,"y":130,"w":370,"h":130,"radius":20,"click":0,"bg_grad_dir":0,"bg_color":"#d8864c","text_color":"#ffffff","border_side":0}
-{"id":31,"obj":"label","parentid":30,"x":10,"y":10,"w":150,"h":30,"click":0,"text":"Küchenradio"}
-{"id":32,"obj":"label","parentid":30,"x":10,"y":50,"w":40,"h":40,"click":true,"text":"\uE425","pad_top":-2,"pad_left":-4,"text_font":40}
-{"id":33,"obj":"label","parentid":30,"x":50,"y":55,"w":300,"h":30,"click":0,"text":"Sender"}
-{"id":34,"obj":"label","parentid":30,"x":10,"y":90,"w":340,"h":30,"click":0,"hidden":true,"text":"Interpret und Titel"}
+{"page":1,"id":51,"obj":"label","parentid":3,"x":10,"y":255,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":1,"id":52,"obj":"img","parentid":3,"x":85,"y":220,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":1,"id":53,"obj":"label","parentid":3,"x":165,"y":255,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":1,"id":54,"obj":"label","parentid":3,"x":240,"y":255,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"page":6,"comment":"---------- Schlafzimmer ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Schlafzimmer","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
-{"comment":"---------- Heizungsthermostat Kachel ---------"}
-{"id":3,"obj":"obj","x":10,"y":50,"w":380,"h":380,"click":0,"border_side":0,"bg_grad_dir":0,"border_width":0}
-{"comment":"---------- Heizungsthermostat Bogen ----------"}
-{"id":4,"obj":"arc","parentid":3,"x":0,"y":0,"w":380,"h":380,"min":50,"max":300,"val":200,"adjustable":true,"border_opa":0,"bg_opa":0,"line_width":38,"line_width10":38,"line_color10":"#fe8f58"}
-{"id":5,"obj":"gauge","parentid":4,"x":0,"y":0,"w":380,"h":380,"min":50,"max":300,"val":200,"enabled":"false","format":1,"critical_value":301,"label_count":6,"line_count":26,"pad_top":2,"pad_bottom":2,"pad_left":2,"pad_right":2,"border_width":0,"text_font":18,"bg_opa":0,"bg_opa2":0,"line_opa2":0,"line_width":3,"line_width1":5,"line_color":"#348feb","line_color1":"#348feb","scale_grad_color":"#eb4934","scale_grad_color1":"#eb4934","scale_end_color1":"#eb4934"}
-{"comment":"---------- Heizungsthermostat Modus ----------"}
-{"id":6,"obj":"label","parentid":3,"x":0,"y":70,"w":380,"h":20,"align":"center","text":"Offline","text_font":18,"text_color":"#00008b"}
-{"comment":"---------- Heizungsthermostat Solltemperatur ----------"}
-{"id":7,"obj":"label","parentid":3,"x":0,"y":120,"w":380,"h":20,"align":"center","text":"Solltemperatur","text_font":18,"text_color":"#fe8f58"}
-{"id":8,"obj":"label","parentid":3,"x":0,"y":140,"w":380,"h":70,"align":"center","text":"0 °C","text_font":64,"text_color":"#fe8f58"}
-{"id":9,"obj":"label","parentid":3,"x":260,"y":140,"w":70,"h":70,"align":"center","text":"+","text_font":62,"text_color":"#d81b43"}
-{"id":10,"obj":"label","parentid":3,"x":50,"y":140,"w":70,"h":70,"align":"center","text":"-","text_font":62,"text_color":"#1f87e8"}
-{"comment":"---------- Heizungsthermostat Isttemperatur ----------"}
-{"id":11,"obj":"label","parentid":3,"x":0,"y":220,"w":380,"h":20,"align":"center","text":"Isttemperatur","text_font":18,"text_color":"#00008b"}
-{"id":12,"obj":"label","parentid":3,"x":0,"y":240,"w":380,"h":70,"align":"center","text":"0 °C","text_font":36,"text_color":"#00008b"}
-{"comment":"---------- Heizungsthermostat Button ----------"}
-{"id":13,"obj":"btn","parentid":3,"x":140,"y":340,"w":100,"h":40,"toggle":true,"radius":20,"bg_color":"#d2d2d2","bg_grad_color":"#75471a","border_color":"#838994","text":"\uE238"}
-{"comment":"---------- Bedienung und Information ---------"}
-{"id":20,"obj":"obj","x":410,"y":55,"w":370,"h":380,"click":0,"border_side":0,"border_width":0,"bg_grad_dir":0,"text_font":26}
-{"id":21,"obj":"obj","parentid":20,"x":0,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":22,"obj":"label","parentid":21,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Bettlicht"}
-{"id":23,"obj":"label","parentid":21,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE91C","text_font":38}
-{"id":24,"obj":"label","parentid":21,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":25,"obj":"obj","parentid":20,"x":195,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":26,"obj":"label","parentid":25,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Fernseher"}
-{"id":27,"obj":"label","parentid":25,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE502","text_font":38}
-{"id":28,"obj":"label","parentid":25,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":29,"obj":"obj","parentid":20,"x":0,"y":130,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":30,"obj":"label","parentid":29,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Insektenlampe groß","text_font":20}
-{"id":31,"obj":"label","parentid":29,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uDB83\uDFA1","text_font":"mdi44"}
-{"id":32,"obj":"label","parentid":29,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":33,"obj":"obj","parentid":20,"x":195,"y":130,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":34,"obj":"label","parentid":33,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Insektenlampe klein","text_font":20}
-{"id":35,"obj":"label","parentid":33,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uDB83\uDFA1","text_font":"mdi44"}
-{"id":36,"obj":"label","parentid":33,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":37,"obj":"obj","parentid":20,"x":0,"y":260,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":38,"obj":"label","parentid":37,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"FRITZ!Repeater"}
-{"id":39,"obj":"label","parentid":37,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uDB80\uDC02","text_font":"mdi38"}
-{"id":40,"obj":"label","parentid":37,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":41,"obj":"obj","parentid":20,"x":195,"y":260,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":42,"obj":"label","parentid":41,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"USB"}
-{"id":43,"obj":"label","parentid":41,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uDB81\uDD53","text_font":"mdi38"}
-{"id":44,"obj":"label","parentid":41,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
+/* Footer & Nav Page 1 */
+{"page":1,"id":99,"obj":"label","x":185,"y":670,"w":200,"h":30,"text":"update: --:--","text_font":20,"text_color":"#7F8C8D"}
+{"page":1,"id":101,"obj":"btn","action":{"down":"page 3"},"x":0,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
+{"page":1,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":750,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
+{"page":1,"id":103,"obj":"btn","action":{"down":"page 2"},"x":321,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
 
-{"page":7,"comment":"---------- Keller ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Keller","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
-{"id":3,"obj":"tabview","x":0,"y":35,"w":800,"btn_pos":1,"bg_opa":0,"text_font40":16,"pad_bottom40":5,"pad_top40":0}
+// --- PAGE 2: Weitere Abfahrten ---
+{"page":2,"id":1,"obj":"btn","x":0,"y":0,"w":480,"h":60,"text":"\uE70E Abfahrten P2","text_font":32,"bg_color":"#2C3E50","radius":0}
+{"page":2,"id":20,"obj":"label","x":0,"y":60,"w":480,"h":40,"text":"      Zeit         Typ Linie              Ziel","text_font":24,"bg_color":"#555555","bg_opa":255,"text_color":"#FFFFFF"}
+{"page":2,"id":3,"obj":"obj","x":5,"y":105,"w":470,"h":550,"bg_color":"#ECF0F1","bg_opa":255,"radius":8,"click":0}
 
-{"id":10,"obj":"tab","parentid":3,"text":"Heizungskeller"}
-{"id":11,"obj":"obj","parentid":10,"x":200,"y":10,"w":400,"h":355,"border_side":15,"border_width":1,"bg_grad_dir":0,"text_font":18}
-{"id":12,"obj":"label","parentid":11,"x":0,"y":0,"w":400,"h":30,"align":"left","pad_left":3,"pad_top":-3,"bg_opa":128,"bg_color":"#d2d2d2","text":"Proxmox VE","text_letter_space":2,"text_decor":1,"text_font":28}
-{"id":13,"obj":"label","parentid":11,"x":0,"y":30,"w":300,"h":20,"align":"left","pad_left":3,"text":"CPU-Auslastung"}
-{"id":14,"obj":"label","parentid":11,"x":300,"y":30,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":15,"obj":"label","parentid":11,"x":0,"y":50,"w":300,"h":20,"align":"left","pad_left":3,"text":"Arbeitsspeicher-Auslastung"}
-{"id":16,"obj":"label","parentid":11,"x":300,"y":50,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":17,"obj":"label","parentid":11,"x":0,"y":70,"w":300,"h":20,"align":"left","pad_left":3,"text":"Massenspeicher-Auslastung (local)"}
-{"id":18,"obj":"label","parentid":11,"x":300,"y":70,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":19,"obj":"label","parentid":11,"x":0,"y":90,"w":300,"h":20,"align":"left","pad_left":3,"text":"Massenspeicher-Auslastung (sdb)"}
-{"id":20,"obj":"label","parentid":11,"x":300,"y":90,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":21,"obj":"label","parentid":11,"x":0,"y":110,"w":300,"h":20,"align":"left","pad_left":3,"text":"APC-USV Last"}
-{"id":22,"obj":"label","parentid":11,"x":300,"y":110,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":23,"obj":"label","parentid":11,"x":0,"y":130,"w":300,"h":20,"align":"left","pad_left":3,"text":"APC-USV Verbleibende Zeit"}
-{"id":24,"obj":"label","parentid":11,"x":300,"y":130,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.0 min"}
-{"id":25,"obj":"label","parentid":11,"x":0,"y":150,"w":300,"h":20,"align":"left","pad_left":3,"text":"Virtuelle Maschinen laufen"}
-{"id":26,"obj":"label","parentid":11,"x":300,"y":150,"w":100,"h":20,"align":"right","pad_right":3,"text":"0"}
-{"id":27,"obj":"label","parentid":11,"x":0,"y":170,"w":300,"h":20,"align":"left","pad_left":3,"text":"Container laufen"}
-{"id":28,"obj":"label","parentid":11,"x":300,"y":170,"w":100,"h":20,"align":"right","pad_right":3,"text":"0"}
-{"id":29,"obj":"label","parentid":11,"x":0,"y":190,"w":300,"h":20,"align":"left","pad_left":3,"text":"Eisfair64-VM (100)","bg_opa":30,"bg_color":"#b20000"}
-{"id":30,"obj":"label","parentid":11,"x":300,"y":190,"w":100,"h":20,"align":"right","pad_right":3,"text":"\uE156","text_color":"#b20000","bg_opa":30,"bg_color":"#b20000"}
-{"id":31,"obj":"label","parentid":11,"x":0,"y":210,"w":300,"h":20,"align":"left","pad_left":3,"text":"VM (100) Status"}
-{"id":32,"obj":"label","parentid":11,"x":300,"y":210,"w":100,"h":20,"align":"right","pad_right":3,"text":"stopped"}
-{"id":33,"obj":"label","parentid":11,"x":0,"y":230,"w":300,"h":20,"align":"left","pad_left":3,"text":"VM (100) CPU-Auslastung"}
-{"id":34,"obj":"label","parentid":11,"x":300,"y":230,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":35,"obj":"label","parentid":11,"x":0,"y":250,"w":300,"h":20,"align":"left","pad_left":3,"text":"VM (100) Arbeitsspeicher-Auslastung"}
-{"id":36,"obj":"label","parentid":11,"x":300,"y":250,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":37,"obj":"label","parentid":11,"x":0,"y":270,"w":300,"h":20,"align":"left","pad_left":3,"text":"HomeAssistant-VM (250)","bg_opa":30,"bg_color":"#b20000"}
-{"id":38,"obj":"label","parentid":11,"x":300,"y":270,"w":100,"h":20,"align":"right","pad_right":3,"text":"\uE156","text_color":"#b20000","bg_opa":30,"bg_color":"#b20000"}
-{"id":39,"obj":"label","parentid":11,"x":0,"y":290,"w":300,"h":20,"align":"left","pad_left":3,"text":"VM (250) Status"}
-{"id":40,"obj":"label","parentid":11,"x":300,"y":290,"w":100,"h":20,"align":"right","pad_right":3,"text":"stopped"}
-{"id":41,"obj":"label","parentid":11,"x":0,"y":310,"w":300,"h":20,"align":"left","pad_left":3,"text":"VM (250) CPU-Auslastung"}
-{"id":42,"obj":"label","parentid":11,"x":300,"y":310,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
-{"id":43,"obj":"label","parentid":11,"x":0,"y":330,"w":300,"h":20,"align":"left","pad_left":3,"text":"VM (250) Arbeitsspeicher-Auslastung"}
-{"id":44,"obj":"label","parentid":11,"x":300,"y":330,"w":100,"h":20,"align":"right","pad_right":3,"text":"0.00 %"}
+/* ZEILE 1 bis 5 für Page 2 */
+{"page":2,"id":11,"obj":"label","parentid":3,"x":10,"y":15,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":2,"id":12,"obj":"img","parentid":3,"x":85,"y":-20,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":2,"id":13,"obj":"label","parentid":3,"x":165,"y":15,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":2,"id":14,"obj":"label","parentid":3,"x":240,"y":15,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"id":50,"obj":"tab","parentid":3,"text":"Waschküche"}
-{"comment":"---------- Bedienung und Information ---------"}
-{"id":51,"obj":"obj","parentid":50,"x":215,"y":20,"w":370,"h":360,"click":0,"border_side":0,"border_width":0,"bg_grad_dir":0,"text_font":26}
-{"id":52,"obj":"obj","parentid":51,"x":0,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":53,"obj":"label","parentid":52,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Waschküchenlicht","text_font":22}
-{"id":54,"obj":"label","parentid":52,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE335","text_font":38}
-{"id":55,"obj":"label","parentid":52,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":56,"obj":"obj","parentid":51,"x":195,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":57,"obj":"label","parentid":56,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Steckdosen"}
-{"id":58,"obj":"label","parentid":56,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE425","text_font":38}
-{"id":59,"obj":"label","parentid":56,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":60,"obj":"linemeter","parentid":51,"x":60,"y":120,"w":250,"h":250,"angle":280,"min":0,"max":1000,"val":0,"line_count":100,"bg_opa":0,"border_width":0,"scale_width":25,"line_width":10,"line_color":"#00ff00","scale_end_line_width":10,"scale_grad_color":"#ff0000","scale_end_color":"#d2d2d2","pad_top":2,"pad_bottom":2,"pad_left":2,"pad_right":2,"value_str":"Steckdosen","value_ofs_y":90,"value_font":20}
-{"id":61,"obj":"obj","parentid":60,"x":70,"y":70,"w":110,"h":100,"bg_opa":0,"text_font":20,"border_side":0,"border_width":0}
-{"id":62,"obj":"label","parentid":61,"x":70,"y":0,"w":40,"h":25,"align":"left","text":"W"}
-{"id":63,"obj":"label","parentid":61,"x":0,"y":0,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":64,"obj":"label","parentid":61,"x":70,"y":25,"w":40,"h":25,"align":"left","text":"V"}
-{"id":65,"obj":"label","parentid":61,"x":0,"y":25,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":66,"obj":"label","parentid":61,"x":70,"y":50,"w":40,"h":25,"align":"left","text":"A"}
-{"id":67,"obj":"label","parentid":61,"x":0,"y":50,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":68,"obj":"label","parentid":61,"x":70,"y":75,"w":40,"h":25,"align":"left","text":"kWh"}
-{"id":69,"obj":"label","parentid":61,"x":0,"y":75,"w":65,"h":25,"align":"right","text":"0.0"}
+{"page":2,"id":21,"obj":"label","parentid":3,"x":10,"y":75,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":2,"id":22,"obj":"img","parentid":3,"x":85,"y":40,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":2,"id":23,"obj":"label","parentid":3,"x":165,"y":75,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":2,"id":24,"obj":"label","parentid":3,"x":240,"y":75,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"id":70,"obj":"tab","parentid":3,"text":"Werkstatt"}
-{"comment":"---------- Bedienung und Information ---------"}
-{"id":71,"obj":"obj","parentid":70,"x":215,"y":20,"w":370,"h":360,"click":0,"border_side":0,"border_width":0,"bg_grad_dir":0,"text_font":26}
-{"id":72,"obj":"obj","parentid":71,"x":0,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":73,"obj":"label","parentid":72,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Werkstattlicht"}
-{"id":74,"obj":"label","parentid":72,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE335","text_font":38}
-{"id":75,"obj":"label","parentid":72,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":76,"obj":"obj","parentid":71,"x":195,"y":0,"w":175,"h":110,"click":true,"radius":20,"bg_color":"#75471a","bg_grad_color":"#f5c799","bg_color02":"#eb8f34","text_color":"#ffffff"}
-{"id":77,"obj":"label","parentid":76,"x":0,"y":25,"w":175,"h":30,"click":0,"align":"center","text":"Schweißplatz"}
-{"id":78,"obj":"label","parentid":76,"x":65,"y":55,"w":45,"h":45,"click":0,"align":"center","text":"\uE210","text_font":38}
-{"id":79,"obj":"spinner","parentid":76,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":true,"bg_opa":0,"line_opa10":180,"line_color":"#ffffff","line_color10":"#6b6b6b","line_width":3,"line_width10":3,"type":2,"angle":120,"speed":1000}
-{"id":80,"obj":"label","parentid":76,"x":65,"y":55,"w":45,"h":45,"click":0,"hidden":false,"align":"center","pad_top":-11,"text_opa":180,"text_color":"#6b6b6b","text":"\\","text_font":54}
-{"id":81,"obj":"linemeter","parentid":71,"x":60,"y":120,"w":250,"h":250,"angle":280,"min":0,"max":1000,"val":0,"line_count":100,"bg_opa":0,"border_width":0,"scale_width":25,"line_width":10,"line_color":"#00ff00","scale_end_line_width":10,"scale_grad_color":"#ff0000","scale_end_color":"#d2d2d2","pad_top":2,"pad_bottom":2,"pad_left":2,"pad_right":2,"value_str":"Steckdose","value_ofs_y":90,"value_font":20}
-{"id":82,"obj":"obj","parentid":81,"x":70,"y":70,"w":110,"h":100,"bg_opa":0,"text_font":20,"border_side":0,"border_width":0}
-{"id":83,"obj":"label","parentid":82,"x":70,"y":0,"w":40,"h":25,"align":"left","text":"W"}
-{"id":84,"obj":"label","parentid":82,"x":0,"y":0,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":85,"obj":"label","parentid":82,"x":70,"y":25,"w":40,"h":25,"align":"left","text":"V"}
-{"id":86,"obj":"label","parentid":82,"x":0,"y":25,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":87,"obj":"label","parentid":82,"x":70,"y":50,"w":40,"h":25,"align":"left","text":"A"}
-{"id":88,"obj":"label","parentid":82,"x":0,"y":50,"w":65,"h":25,"align":"right","text":"0.0"}
-{"id":89,"obj":"label","parentid":82,"x":70,"y":75,"w":40,"h":25,"align":"left","text":"kWh"}
-{"id":90,"obj":"label","parentid":82,"x":0,"y":75,"w":65,"h":25,"align":"right","text":"0.0"}
+{"page":2,"id":31,"obj":"label","parentid":3,"x":10,"y":135,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":2,"id":32,"obj":"img","parentid":3,"x":85,"y":100,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":2,"id":33,"obj":"label","parentid":3,"x":165,"y":135,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":2,"id":34,"obj":"label","parentid":3,"x":240,"y":135,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"page":8,"comment":"---------- Raum8 ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Raum8","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
+{"page":2,"id":41,"obj":"label","parentid":3,"x":10,"y":195,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":2,"id":42,"obj":"img","parentid":3,"x":85,"y":160,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":2,"id":43,"obj":"label","parentid":3,"x":165,"y":195,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":2,"id":44,"obj":"label","parentid":3,"x":240,"y":195,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
 
-{"page":9,"comment":"---------- Raum9 ----------"}
-{"id":1,"obj":"label","x":0,"y":0,"w":800,"h":35,"bg_opa":255,"bg_color":"#fe8f58","text_color":"#ffffff","align":"center","text":"Raum9","text_font":26}
-{"id":2,"obj":"label","x":700,"y":0,"w":100,"h":35,"align":"right","text":"0.0 °C","text_font":24}
+{"page":2,"id":51,"obj":"label","parentid":3,"x":10,"y":255,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":1}
+{"page":2,"id":52,"obj":"img","parentid":3,"x":85,"y":220,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
+{"page":2,"id":53,"obj":"label","parentid":3,"x":165,"y":255,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
+{"page":2,"id":54,"obj":"label","parentid":3,"x":240,"y":255,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+
+/* Footer & Nav Page 2 */
+{"page":2,"id":99,"obj":"label","x":185,"y":670,"w":200,"h":30,"text":"update: --:--","text_font":20,"text_color":"#7F8C8D"}
+{"page":2,"id":101,"obj":"btn","action":{"down":"page 1"},"x":0,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
+{"page":2,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":750,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
+{"page":2,"id":103,"obj":"btn","action":{"down":"page 3"},"x":321,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
+
+// --- PAGE 3: Liniennetz ---
+{"page":3,"id":11,"obj":"img","x":-250,"y":-20,"w":480,"h":480,"src":"L:/DresdenLiniennetz.png","zoom":240}
+{"page":3,"id":101,"obj":"btn","action":{"down":"page 2"},"x":0,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
+{"page":3,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":750,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
+{"page":3,"id":103,"obj":"btn","action":{"down":"page 1"},"x":321,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
+
