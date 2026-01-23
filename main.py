@@ -94,36 +94,34 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
     try:
         # 1. Haltestellen-ID (StopID) finden
         r = requests.post("https://webapi.vvo-online.de/tr/pointfinder?format=json", 
-	                 json={"query": station_name, "stopsOnly": True, "limit": 1}, timeout=10)
+                     json={"query": station_name, "stopsOnly": True, "limit": 1}, timeout=10)
         points = r.json().get("Points", [])
 
         if not points: 
             return [], "Unbekannt"
 
-        # Den String zerlegen (VVO Format: ID|Typ|Stadt|Halt|...)
         parts = points[0].split("|")
         stopid = parts[0]
-
-    	# --- HIER DIE FUNKTION AUFRUFEN ---
+        # Den Namen direkt hier bereinigen
         actual_name = get_clean_display_name(parts[2], parts[3])
 
-
         # 2. Abfahrtsdaten abrufen
+        # WICHTIG: Hier müssen ALLE Mots rein, damit die API sie auch sendet!
         payload = {
             "stopid": stopid, 
             "time": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
             "isarrival": False, 
             "limit": 50, 
-            "mot": ["Tram", "CityBus", "SuburbanRailway", "RegionalTrain", "RegionalBus", "Train"]
+            "mot": ["Tram", "CityBus", "SuburbanRailway", "RegionalTrain", "RegionalBus", 
+                    "Train", "BusOnRequest", "PlusBus", "ClockBus", "Ferry", "SchoolBus"]
         }
         res = requests.post("https://webapi.vvo-online.de/dm?format=json", json=payload, timeout=10)
         data = res.json()
-
-        #print(data)        
+       
         now = datetime.now(timezone.utc)
         departures = []
         
-        # 3. Filter-Vorbereitung (Unterstützt Listen für "zug")
+        # 3. Filter-Vorbereitung
         active_mots = []
         if mot_filter:
             for m in mot_filter:
@@ -133,14 +131,15 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
                 elif mapped:
                     active_mots.append(mapped)
 
+        # 4. Verarbeitung der Abfahrten
         for dep in data.get("Departures", []):
             platform = dep.get("Platform", {}).get("Name", "")
             mot_type = dep.get("Mot", "Default")
-            print(dep)
+            
             # Filter: Gleis
             if platform_filter and platform != platform_filter: continue
             
-            # Filter: Verkehrsmittel (Prüft ob mot_type in der Liste der erlaubten Typen ist)
+            # Filter: Verkehrsmittel
             if active_mots and mot_type not in active_mots: continue
             
             # Zeit-Parsing
@@ -150,35 +149,39 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
             
             if not real_dt or not sch_dt: continue
 
-            # --- ZEITBERECHNUNG MIT KAUFMÄNNISCHER RUNDUNG ---
+            # Verspätung prüfen
+            delay_sec = (real_dt - sch_dt).total_seconds()
+            is_delayed = delay_sec > 45 
+
+            # Zeitberechnung (Rundung)
             diff_sec = (real_dt - now).total_seconds()
-            # Wir addieren 30 Sek vor der Division durch 60, um korrekt zu runden
             diff_min = int((diff_sec + 30) / 60)
             
-            # Stern-Logik: Vergleich Realzeit mit Fahrplanzeit (> 30 Sek Abweichung)
-            has_offset = abs((real_dt - sch_dt).total_seconds()) > 30 
-            
-            if diff_sec < 45: # Puffer für "jetzt" Anzeige
+            if diff_sec < 45: 
                 time_label = "jetzt"
             else:
                 time_label = f"{diff_min} min"
             
-            if has_offset:
-                time_label += "*"
-            
-            # Ziel-Text Formatierung
+            # --- NEU: Spezial-Logik für Linien-Text ---
+            line_val = dep.get("LineName", "")
+            if mot_type == "BusOnRequest":
+                line_val = f"{line_val}*"
+            elif mot_type == "IntercityBus" or line_val == "SEV":
+                line_val = "SEV"
+
+            # Ziel-Text
             destination = dep.get('Direction', '')
             if not platform_filter and platform:
-                # Unterscheidung Gleis (Bahn) vs. Steig (Bus/Tram)
                 label = "Gl." if mot_type in ["Train", "RegionalTrain", "SuburbanRailway"] else "St."
                 destination = f"{label}{platform} {destination}"
 
             departures.append({
                 "time": time_label,
-                "line": dep.get("LineName", ""),
+                "line": line_val,
                 "direction": destination,
                 "icon": ICON_MAP.get(mot_type, ICON_MAP["Default"]),
-                "is_urgent": diff_min <= 2
+                "is_urgent": diff_min <= 2,
+                "is_delayed": is_delayed # Wichtig für die rote Farbe im Loop
             })
             
         return departures[:5], actual_name
@@ -186,6 +189,7 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
     except Exception as e:
         print(f"Fehler in get_vvo_departures: {e}")
         return [], station_name
+
     
 
 def run():
