@@ -23,9 +23,9 @@ MQTT_TOPIC_BASE = f"hasp/{args.device}/command/p{args.page}b"
 
 
 # --- KONFIGURATION (Global oder vor run()) ---
-COL_X = {"time": 10, "icon": 85, "line": 165, "dest": 220}
+COL_X = {"time": 3, "icon": 85, "line": 160, "dest": 215}
 MAX_CHARS = 15
-SCROLL_TYPE = "scroll"
+SCROLL_TYPE = "loop"
 DEFAULT_TYPE = "crop"
 
 # Farben (HEX)
@@ -144,6 +144,7 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
         for dep in data.get("Departures", []):
             platform = dep.get("Platform", {}).get("Name", "")
             mot_type = dep.get("Mot", "Default")
+            print(dep)
             
             # Filter: Gleis
             if platform_filter and platform != platform_filter: continue
