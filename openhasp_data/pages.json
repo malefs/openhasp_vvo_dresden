@@ -7,17 +7,17 @@
 {"page":1,"id":11,"obj":"label","parentid":3,"x":10,"y":15,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":1,"id":12,"obj":"img","parentid":3,"x":85,"y":-20,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":1,"id":13,"obj":"label","parentid":3,"x":165,"y":15,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":1,"id":14,"obj":"label","parentid":3,"x":240,"y":15,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":1,"id":14,"obj":"label","parentid":3,"x":240,"y":15,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 {"page":1,"id":21,"obj":"label","parentid":3,"x":10,"y":75,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":1,"id":22,"obj":"img","parentid":3,"x":85,"y":40,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":1,"id":23,"obj":"label","parentid":3,"x":165,"y":75,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":1,"id":24,"obj":"label","parentid":3,"x":240,"y":75,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":1,"id":24,"obj":"label","parentid":3,"x":240,"y":75,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 {"page":1,"id":31,"obj":"label","parentid":3,"x":10,"y":135,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":1,"id":32,"obj":"img","parentid":3,"x":85,"y":100,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":1,"id":33,"obj":"label","parentid":3,"x":165,"y":135,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":1,"id":34,"obj":"label","parentid":3,"x":240,"y":135,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":1,"id":34,"obj":"label","parentid":3,"x":240,"y":135,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 {"page":1,"id":41,"obj":"label","parentid":3,"x":10,"y":195,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":1,"id":42,"obj":"img","parentid":3,"x":85,"y":160,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
@@ -27,13 +27,19 @@
 {"page":1,"id":51,"obj":"label","parentid":3,"x":10,"y":255,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":1,"id":52,"obj":"img","parentid":3,"x":85,"y":220,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":1,"id":53,"obj":"label","parentid":3,"x":165,"y":255,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":1,"id":54,"obj":"label","parentid":3,"x":240,"y":255,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":1,"id":54,"obj":"label","parentid":3,"x":240,"y":255,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 /* Footer & Nav Page 1 */
-{"page":1,"id":99,"obj":"label","x":185,"y":670,"w":200,"h":30,"text":"update: --:--","text_font":20,"text_color":"#7F8C8D"}
-{"page":1,"id":101,"obj":"btn","action":{"down":"page 3"},"x":0,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
-{"page":1,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":750,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
-{"page":1,"id":103,"obj":"btn","action":{"down":"page 2"},"x":321,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
+
+{"page":1,"id":97,"obj":"label","x":5,"y":410,"w":200,"h":30,"text":"%ip%","text_font":10,"text_color":"#7F8C8D", "mode":"crop"}
+{"page":1,"id":98,"obj":"label","x":5,"y":418,"w":200,"h":30,"text":"%hostname%","text_font":10,"text_color":"#7F8C8D", "mode":"crop"}
+
+{"page":1,"id":99,"obj":"label","x":185,"y":400,"w":200,"h":30,"text":"update: --:--","text_font":20,"text_color":"#7F8C8D"}
+
+
+{"page":1,"id":101,"obj":"btn","action":{"down":"page 3"},"x":0,"y":430,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
+{"page":1,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":430,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
+{"page":1,"id":103,"obj":"btn","action":{"down":"page 2"},"x":321,"y":430,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
 
 // --- PAGE 2: Weitere Abfahrten ---
 {"page":2,"id":1,"obj":"btn","x":0,"y":0,"w":480,"h":60,"text":"\uE70E Abfahrten P2","text_font":32,"bg_color":"#2C3E50","radius":0}
@@ -44,36 +50,36 @@
 {"page":2,"id":11,"obj":"label","parentid":3,"x":10,"y":15,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":2,"id":12,"obj":"img","parentid":3,"x":85,"y":-20,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":2,"id":13,"obj":"label","parentid":3,"x":165,"y":15,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":2,"id":14,"obj":"label","parentid":3,"x":240,"y":15,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":2,"id":14,"obj":"label","parentid":3,"x":240,"y":15,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 {"page":2,"id":21,"obj":"label","parentid":3,"x":10,"y":75,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":2,"id":22,"obj":"img","parentid":3,"x":85,"y":40,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":2,"id":23,"obj":"label","parentid":3,"x":165,"y":75,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":2,"id":24,"obj":"label","parentid":3,"x":240,"y":75,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":2,"id":24,"obj":"label","parentid":3,"x":240,"y":75,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 {"page":2,"id":31,"obj":"label","parentid":3,"x":10,"y":135,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":2,"id":32,"obj":"img","parentid":3,"x":85,"y":100,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":2,"id":33,"obj":"label","parentid":3,"x":165,"y":135,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":2,"id":34,"obj":"label","parentid":3,"x":240,"y":135,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":2,"id":34,"obj":"label","parentid":3,"x":240,"y":135,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 {"page":2,"id":41,"obj":"label","parentid":3,"x":10,"y":195,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":2,"id":42,"obj":"img","parentid":3,"x":85,"y":160,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":2,"id":43,"obj":"label","parentid":3,"x":165,"y":195,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":2,"id":44,"obj":"label","parentid":3,"x":240,"y":195,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":2,"id":44,"obj":"label","parentid":3,"x":240,"y":195,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 {"page":2,"id":51,"obj":"label","parentid":3,"x":10,"y":255,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
 {"page":2,"id":52,"obj":"img","parentid":3,"x":85,"y":220,"w":30,"h":35,"src":"L:/ico-tram.png","zoom":100}
 {"page":2,"id":53,"obj":"label","parentid":3,"x":165,"y":255,"w":50,"h":35,"text_font":30,"text_color":"#2980B9","align":1}
-{"page":2,"id":54,"obj":"label","parentid":3,"x":240,"y":255,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"loop"}
+{"page":2,"id":54,"obj":"label","parentid":3,"x":240,"y":255,"w":220,"h":35,"text_font":30,"text_color":"#000000","mode":"crop"}
 
 /* Footer & Nav Page 2 */
-{"page":2,"id":99,"obj":"label","x":185,"y":670,"w":200,"h":30,"text":"update: --:--","text_font":20,"text_color":"#7F8C8D"}
-{"page":2,"id":101,"obj":"btn","action":{"down":"page 1"},"x":0,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
-{"page":2,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":750,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
-{"page":2,"id":103,"obj":"btn","action":{"down":"page 3"},"x":321,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
+{"page":2,"id":99,"obj":"label","x":185,"y":400,"w":200,"h":30,"text":"update: --:--","text_font":20,"text_color":"#7F8C8D"}
+{"page":2,"id":101,"obj":"btn","action":{"down":"page 1"},"x":0,"y":430,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
+{"page":2,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":430,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
+{"page":2,"id":103,"obj":"btn","action":{"down":"page 3"},"x":321,"y":430,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
 
 // --- PAGE 3: Liniennetz ---
 {"page":3,"id":11,"obj":"img","x":-250,"y":-20,"w":480,"h":480,"src":"L:/DresdenLiniennetz.png","zoom":240}
-{"page":3,"id":101,"obj":"btn","action":{"down":"page 2"},"x":0,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
-{"page":3,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":750,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
-{"page":3,"id":103,"obj":"btn","action":{"down":"page 1"},"x":321,"y":750,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}
+{"page":3,"id":101,"obj":"btn","action":{"down":"page 2"},"x":0,"y":430,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE141","text_color":"#FFFFFF","text_font":32}
+{"page":3,"id":102,"obj":"btn","action":{"down":"page 1"},"x":160,"y":430,"w":160,"h":50,"bg_color":"#2C3E50","text":"\uE2DC","text_color":"#FFFFFF","text_font":32}
+{"page":3,"id":103,"obj":"btn","action":{"down":"page 1"},"x":321,"y":430,"w":159,"h":50,"bg_color":"#2C3E50","text":"\uE142","text_color":"#FFFFFF","text_font":32}

@@ -1,291 +1,167 @@
-import requests
-import paho.mqtt.client as mqtt
-from paho.mqtt.enums import CallbackAPIVersion
-from datetime import datetime, timezone
+import json
 import time
+import os
 import argparse
-import re 
+from datetime import datetime
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import paho.mqtt.client as mqtt
 
-# --- PARAMETER-STEUERUNG ---
-parser = argparse.ArgumentParser(description='VVO Abfahrtsmonitor für openHASP (480px) - 5 Zeilen')
-parser.add_argument('station', type=str, help='Name der Haltestelle https://www.vvo-mobil.de/#/timetables/results')   
-parser.add_argument('-d', '--device', type=str, default="plate", help='Name des Displays (Node Name in openHASP)')
-parser.add_argument('-b', '--host', type=str, default="127.0.0.1", help='MQTT Broker IP')
-parser.add_argument('-u', '--user', type=str, help='MQTT Username')
-parser.add_argument('-P', '--password', type=str, help='MQTT Passwort')
-parser.add_argument('--gleis', type=str, default=None, help='Optionale Gleisnummer')
-parser.add_argument('--filter', nargs='+', help='Filter: tram bus s zug')
-parser.add_argument('--page', type=int, default=1, help='Display-Seite (p1, p2, etc.)')
-args = parser.parse_args()
+# Import der VVO Logik
+from vvo_logic import get_vvo_departures
 
-MQTT_BROKER = args.host
-MQTT_TOPIC_BASE = f"hasp/{args.device}/command/p{args.page}b"
+config = {}
+globals_cfg = {}
+FORCE_UPDATE = False
 
-
-# --- KONFIGURATION (Global oder vor run()) ---
-COL_X = {"time": 3, "icon": 85, "line": 160, "dest": 215}
-MAX_CHARS = 15
-SCROLL_TYPE = "loop"
-DEFAULT_TYPE = "crop"
-
-# Farben (HEX)
-COLOR_NORMAL = "#7F8C8D"  # Grau/Weiß
-COLOR_URGENT = "#FFA500"  # Orange (< 2 min)
-COLOR_DELAY  = "#FF0000"  # Rot (Verspätung)
-
-
-# --- MOT-FILTER ---
-# Hier definierst du, welche API-Begriffe zu welcher Gruppe gehören
-MOT_FILTER_MAP = {
-    "tram": "Tram", 
-    "bus": ["CityBus", "RegionalBus", "Bus", "SchoolBus", "BusOnRequest", "IntercityBus", "ClockBus","PlusBus"], 
-    "s": "SuburbanRailway", 
-    "zug": ["RegionalTrain", "Train"],
-    "faehre": "Ferry"
-}
-
-# --- ICON-MAP ---
-# Hier verknüpfst du die Gruppen/Mots mit deinen Dateien auf dem Display
-ICON_MAP = {
-    "Tram": "L:/ico-tram.png",
-    "CityBus": "L:/ico-bus.png",
-    "RegionalBus": "L:/ico-bus.png",
-    "SchoolBus": "L:/school-bus.png",
-    "ClockBus": "L:/clock-bus.png",
-    "PlusBus": "L:/ico-plus-bus.png",
-    "IntercityBus": "L:/ico-bus.png", # SEV bleibt Bus-Icon
-    "BusOnRequest": "L:/busOnRequest.png",  # Dein Rufbus-Icon
-    "Ferry": "L:/ferry-colored.png",        # Dein Fähren-Icon
-    "SuburbanRailway": "L:/ico-metropolitan-railway.png",
-    "RegionalTrain": "L:/ico-train.png",
-    "Train": "L:/ico-train.png",
-    "Default": "L:/ico-train.png"
-}
-
-
-def get_clean_display_name(stadt, halt):
-    """Baut aus Stadt und Haltestelle einen sauberen Namen für das Display."""
-    # 1. Stadt säubern für den Vergleich (z.B. "Plauen (Vogtl)" -> "plauen")
-    stadt_simple = re.sub(r'\(.*?\)', '', stadt).strip().lower()
-    
-    # 2. Prüfen: Ist die Stadt bereits im Haltestellennamen enthalten?
-    if stadt_simple in halt.lower():
-        # Fall Jocketa: "Jocketa" ist in "Jocketa, Bahnhof" -> nimm nur den Halt
-        name = halt
-    else:
-        # Fall Plauen: "Plauen" fehlt in "oberer Bahnhof" -> kombiniere beides
-        name = f"{stadt} {halt}"
-
-    # 3. Abkürzungen anwenden
-    replacements = {
-        r"\boberer Bahnhof\b": "Ob. Bf.",
-        r"\bunterer Bahnhof\b": "Unt. Bf.",
-        r"\bHauptbahnhof\b": "Hbf.",
-        r"\bBahnhof\b": "Bf.",
-        r",": "",  # Entfernt Komma bei "Jocketa, Bahnhof"
-    }
-    
-    for pattern, replacement in replacements.items():
-        name = re.sub(pattern, replacement, name, flags=re.IGNORECASE)
-    
-    # 4. Doppelte Leerzeichen entfernen und trimmen
-    return re.sub(r'\s+', ' ', name).strip()
-
-
-def parse_vvo_date(vvo_date):
-    if not vvo_date: return None
+def load_config(file_path):
+    global config, globals_cfg
     try:
-        millis = int(vvo_date.split("(")[1].split(")")[0].split("+")[0].split("-")[0])
-        return datetime.fromtimestamp(millis / 1000, tz=timezone.utc)
-    except: return None
-
-def get_vvo_departures(station_name, platform_filter, mot_filter):
-    try:
-        # 1. Haltestellen-ID (StopID) finden
-        r = requests.post("https://webapi.vvo-online.de/tr/pointfinder?format=json", 
-                     json={"query": station_name, "stopsOnly": True, "limit": 1}, timeout=10)
-        points = r.json().get("Points", [])
-
-        if not points: 
-            return [], "Unbekannt"
-
-        parts = points[0].split("|")
-        stopid = parts[0]
-        # Den Namen direkt hier bereinigen
-        actual_name = get_clean_display_name(parts[2], parts[3])
-
-        # 2. Abfahrtsdaten abrufen
-        # WICHTIG: Hier müssen ALLE Mots rein, damit die API sie auch sendet!
-        payload = {
-            "stopid": stopid, 
-            "time": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-            "isarrival": False, 
-            "limit": 50, 
-            "mot": ["Tram", "CityBus", "SuburbanRailway", "RegionalTrain", "RegionalBus", 
-                    "Train", "BusOnRequest", "PlusBus", "ClockBus", "Ferry", "SchoolBus"]
-        }
-        res = requests.post("https://webapi.vvo-online.de/dm?format=json", json=payload, timeout=10)
-        data = res.json()
-       
-        now = datetime.now(timezone.utc)
-        departures = []
-        
-        # 3. Filter-Vorbereitung
-        active_mots = []
-        if mot_filter:
-            for m in mot_filter:
-                mapped = MOT_FILTER_MAP.get(m.lower())
-                if isinstance(mapped, list):
-                    active_mots.extend(mapped)
-                elif mapped:
-                    active_mots.append(mapped)
-
-        # 4. Verarbeitung der Abfahrten
-        for dep in data.get("Departures", []):
-            platform = dep.get("Platform", {}).get("Name", "")
-            mot_type = dep.get("Mot", "Default")
-            print(dep)
-            
-            # Filter: Gleis
-            if platform_filter and platform != platform_filter: continue
-            
-            # Filter: Verkehrsmittel
-            if active_mots and mot_type not in active_mots: continue
-            
-            # Zeit-Parsing
-            sch_dt = parse_vvo_date(dep.get("ScheduledTime"))
-            rt_str = dep.get("RealTime")
-            real_dt = parse_vvo_date(rt_str) if rt_str else sch_dt
-            
-            if not real_dt or not sch_dt: continue
-
-            # Verspätung prüfen
-            delay_sec = (real_dt - sch_dt).total_seconds()
-            is_delayed = delay_sec > 45 
-
-            # Zeitberechnung (Rundung)
-            diff_sec = (real_dt - now).total_seconds()
-            diff_min = int((diff_sec + 30) / 60)
-            
-            if diff_sec < 45: 
-                time_label = "jetzt"
-            else:
-                time_label = f"{diff_min} min"
-            
-            # --- NEU: Spezial-Logik für Linien-Text ---
-            line_val = dep.get("LineName", "")
-            if mot_type == "BusOnRequest":
-                line_val = f"{line_val}*"
-            elif mot_type == "IntercityBus" or line_val == "SEV":
-                line_val = "SEV"
-
-            # Ziel-Text
-            destination = dep.get('Direction', '')
-            if not platform_filter and platform:
-                label = "Gl." if mot_type in ["Train", "RegionalTrain", "SuburbanRailway"] else "St."
-                destination = f"{label}{platform} {destination}"
-
-            departures.append({
-                "time": time_label,
-                "line": line_val,
-                "direction": destination,
-                "icon": ICON_MAP.get(mot_type, ICON_MAP["Default"]),
-                "is_urgent": diff_min <= 2,
-                "is_delayed": is_delayed # Wichtig für die rote Farbe im Loop
-            })
-            
-        return departures[:5], actual_name
-
+        with open(file_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+            globals_cfg = config['global_settings']
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Config geladen: {file_path}")
+        return True
     except Exception as e:
-        print(f"Fehler in get_vvo_departures: {e}")
-        return [], station_name
+        print(f"Fehler beim Laden der Config: {e}")
+        return False
 
-def run():
-    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2)
+class ConfigChangeHandler(FileSystemEventHandler):
+    def __init__(self, client, file_path):
+        self.client = client
+        self.file_path = os.path.abspath(file_path)
+        self.last_modified = 0
 
+    def on_modified(self, event):
+        # Absoluter Pfadvergleich, um sicherzugehen
+        if os.path.abspath(event.src_path) == self.file_path:
+            # Entprellen (Debounce), da manche Editoren 2x speichern
+            if time.time() - self.last_modified > 2:
+                print(f"\n[{datetime.now().strftime('%H:%M:%S')}] ÄNDERUNG ERKANNT: {self.file_path}")
+                if load_config(self.file_path):
+                    #init_displays(self.client)
+                    global FORCE_UPDATE
+                    FORCE_UPDATE = True
+                self.last_modified = time.time()
+
+def safe_publish(client, topic, payload):
+    client.publish(topic, payload)
+    # Dein Wunsch-Delay gegen Overflow
+    time.sleep(globals_cfg.get('mqtt_delay_sec', 0.1))
+
+def init_displays(client):
+    print("Sende Layout-Initialisierung...")
+    prefix = globals_cfg['mqtt_topic_prefix']
+    cols = globals_cfg['columns_x']
+    for page in config['pages']:
+        topic_base = f"{prefix}p{page['id']}b"
+        for i in range(page['line_count']):
+            bid = 11 + (i * 10)
+            safe_publish(client, f"{topic_base}{bid}.x", cols['time'])
+            safe_publish(client, f"{topic_base}{bid+1}.x", cols['icon'])
+            safe_publish(client, f"{topic_base}{bid+2}.x", cols['line'])
+            safe_publish(client, f"{topic_base}{bid+3}.x", cols['dest'])
+            safe_publish(client, f"{topic_base}{bid+3}.w", 210)
+
+def update_page(client, page_cfg):
+    prefix = globals_cfg['mqtt_topic_prefix']
+    topic_base = f"{prefix}p{page_cfg['id']}b"
+    
+    deps, station_name = get_vvo_departures(
+        page_cfg['vvo_id_or_name'], 
+        page_cfg['platform'], 
+        page_cfg['mot_filter']
+    )
+    
+    now_dt = datetime.now()
+    display_title = f"{station_name} Gl.{page_cfg['platform']}" if page_cfg['platform'] else station_name
+    
+    # Konsolenausgabe
+    print(f"\n[{now_dt.strftime('%H:%M:%S')}] --- {display_title} ---")
+    print(f"{'Zeit':<10} | {'Linie':<5} | {'Ziel'}")
+    print("-" * 50)
+
+    safe_publish(client, f"{topic_base}1.text", f"\uE70E {display_title}")
+    safe_publish(client, f"{topic_base}99.text", f"Update: {now_dt.strftime('%H:%M')}")
+
+    for i in range(page_cfg['line_count']):
+        bid = 11 + (i * 10)
+        if i < len(deps):
+            d = deps[i]
+            color = globals_cfg['colors']['delay'] if d['is_delayed'] else \
+                   (globals_cfg['colors']['urgent'] if d['is_urgent'] else globals_cfg['colors']['normal'])
+            
+            for off in [0, 1, 2, 3]: safe_publish(client, f"{topic_base}{bid+off}.hidden", 0)
+            
+            safe_publish(client, f"{topic_base}{bid}.text", d['time'])
+            safe_publish(client, f"{topic_base}{bid}.text_color", color)
+            safe_publish(client, f"{topic_base}{bid+1}.src", d['icon'])
+            safe_publish(client, f"{topic_base}{bid+2}.text", d['line'])
+            
+            dest = d['direction']
+            max_c = globals_cfg.get('max_chars_before_scroll', 15)
+            mode = globals_cfg['scroll_type'] if len(dest) > max_c else globals_cfg['default_type']
+            final_dest = dest + "  +++  " if mode == "loop" else dest
+            
+            safe_publish(client, f"{topic_base}{bid+3}.mode", mode)
+            safe_publish(client, f"{topic_base}{bid+3}.text", final_dest)
+            
+            print(f"{d['time']:<10} | {d['line']:<5} | {dest}")
+        else:
+            for off in [0, 1, 2, 3]: safe_publish(client, f"{topic_base}{bid+off}.hidden", 1)
+
+def main():
+    global FORCE_UPDATE
+    parser = argparse.ArgumentParser()
+    parser.add_argument('config')
+    parser.add_argument('-b', '--broker', default='127.0.0.1')
+    parser.add_argument('-u', '--user')
+    parser.add_argument('-P', '--password')
+    args = parser.parse_args()
+
+    # Pfad absolut machen für watchdog
+    config_abs_path = os.path.abspath(args.config)
+    config_dir = os.path.dirname(config_abs_path)
+
+    if not load_config(config_abs_path): return
+
+    client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
     if args.user and args.password:
         client.username_pw_set(args.user, args.password)
-
-    client.connect(MQTT_BROKER, 1883, 60)
+    
+    print(f"Verbinde zu MQTT Broker: {args.broker}")
+    client.connect(args.broker, 1883, 60)
     client.loop_start()
+    
+    init_displays(client)
 
-    # --- INITIALISIERUNG ---
-    print(f"Initialisiere Layout auf {MQTT_BROKER}...")
-    for i in range(5):
-        base_id = 11 + (i * 10)
-        client.publish(f"{MQTT_TOPIC_BASE}{base_id}.x", COL_X["time"])
-        client.publish(f"{MQTT_TOPIC_BASE}{base_id+1}.x", COL_X["icon"])
-        client.publish(f"{MQTT_TOPIC_BASE}{base_id+2}.x", COL_X["line"])
-        client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.x", COL_X["dest"])
-        client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.w", 230)
-        time.sleep(0.05)
+    # Watchdog Setup
+    observer = Observer()
+    handler = ConfigChangeHandler(client, config_abs_path)
+    # Wir beobachten den Ordner der Datei
+    observer.schedule(handler, path=config_dir or '.', recursive=False)
+    observer.start()
 
-    while True:
-        try:
-            deps, station_full_name = get_vvo_departures(args.station, args.gleis, args.filter)
-            now_dt = datetime.now()
+    print(f"Monitoring läuft für: {config_abs_path}")
+
+    try:
+        while True:
+            for page in config['pages']:
+                update_page(client, page)
+                # Kleiner Sleep zwischen den Seiten (falls mehrere)
+                time.sleep(1)
             
-            display_name = f"{station_full_name} Gl.{args.gleis}" if args.gleis else station_full_name
-            
-            print(f"\n[{now_dt.strftime('%H:%M:%S')}] --- Station: {display_name} ---")
-            print(f"{'Zeit':<10} | {'Linie':<5} | {'Mode':<6} | {'Ziel'}")
-            print("-" * 60)
-
-            # Header & Footer
-            client.publish(f"{MQTT_TOPIC_BASE}1.text", f"\uE70E {display_name}")
-            client.publish(f"{MQTT_TOPIC_BASE}99.text", f"update: {now_dt.strftime('%H:%M')}")
-
-            for i in range(5):
-                base_id = 11 + (i * 10)
-                
-                if i < len(deps):
-                    d = deps[i]
-                    dest_text = d['direction']
-                    
-                    # Sichtbarkeit
-                    for off in [0, 1, 2, 3]: client.publish(f"{MQTT_TOPIC_BASE}{base_id+off}.hidden", 0)
-
-                    # Zeit & Farbe bestimmen
-                    t_color = COLOR_NORMAL
-                    c_name = "NORMAL"
-                    if d.get('is_delayed'):
-                        t_color = COLOR_DELAY
-                        c_name = "DELAY (RED)"
-                    elif d.get('is_urgent'):
-                        t_color = COLOR_URGENT
-                        c_name = "URGENT (ORANGE)"
-                    
-                    client.publish(f"{MQTT_TOPIC_BASE}{base_id}.text", d['time'])
-                    client.publish(f"{MQTT_TOPIC_BASE}{base_id}.text_color", t_color)
-
-                    # Icon & Linie
-                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+1}.src", d['icon'])
-                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+2}.text", d['line'])
-
-                    # Scroll-Logik
-                    mode = SCROLL_TYPE if len(dest_text) > MAX_CHARS else DEFAULT_TYPE
-                    final_dest = dest_text + "  +++  " if mode == "loop" else dest_text
-
-                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.mode", mode)
-                    client.publish(f"{MQTT_TOPIC_BASE}{base_id+3}.text", final_dest)
-                    
-                    # Konsolenausgabe für dich zur Kontrolle
-                    print(f"{d['time']:<10} | {d['line']:<5} | {mode:<6} | {dest_text} ({c_name})")
-                    
-                    time.sleep(0.02)
-                else:
-                    # Zeile ausblenden & in Konsole vermerken
-                    for off in [0, 1, 2, 3]: client.publish(f"{MQTT_TOPIC_BASE}{base_id+off}.hidden", 1)
-                    print(f"{'---':<10} | {'---':<5} | {'---':<6} | (leer)")
-
-        except Exception as e:
-            print(f"!!! FEHLER IM LOOP: {e}")
-
-        time.sleep(30)
-
+            wait_time = globals_cfg.get('update_interval_sec', 30)
+            FORCE_UPDATE = False
+            # Warte-Loop der durch FORCE_UPDATE unterbrochen werden kann
+            for _ in range(wait_time * 10):
+                if FORCE_UPDATE: break
+                time.sleep(0.1)
+    except KeyboardInterrupt:
+        print("\nBeende...")
+        observer.stop()
+    observer.join()
 
 if __name__ == "__main__":
-    run()
-
-
+    main()
 

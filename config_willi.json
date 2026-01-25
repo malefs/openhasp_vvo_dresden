@@ -1,0 +1,39 @@
+{
+  "global_settings": {
+    "mqtt_topic_prefix": "hasp/plate_willi_1/command/",
+    "update_interval_sec": 30,
+    "mqtt_delay_sec": 0.03,
+    "max_chars_before_scroll": 15,
+    "scroll_type": "loop",
+    "default_type": "crop",
+    "colors": {
+      "normal": "#7F8C8D",
+      "urgent": "#FFA500",
+      "delay": "#FF0000"
+    },
+    "columns_x": {
+      "time": 5,
+      "icon": 105,
+      "line": 185,
+      "dest": 260
+    }
+  },
+  "pages": [
+    {
+      "id": 1,
+      "vvo_id_or_name": "S-Bahnhof Bischofsplatz",
+      "platform": null,
+      "mot_filter": ["tram","zug"],
+      "line_count": 5
+    },
+    {
+      "id": 2,
+      "vvo_id_or_name": "U Pankstr.", 
+      "platform": null,
+      "mot_filter": [],
+      "line_count": 5
+    }
+  ]
+}
+
+
