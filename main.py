@@ -130,7 +130,7 @@ def update_page(client, page_cfg):
     )
     
     # Wetter auf das Display schicken (z.B. Objekt ID 2)
-    print(weather)
+    print(weather.get("icon_now"))
     if weather:
         # safe_publish nutzt jetzt das vereinfachte System (nur Anhang senden)
         safe_publish(client, f"{topic_base}2.text", weather.get("temp"))
