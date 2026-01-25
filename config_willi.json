@@ -1,8 +1,8 @@
 {
   "global_settings": {
-    "mqtt_topic_prefix": "hasp/plate_willi_1/command/",
+    "mqtt_topic_prefix": "hasp/plate_willi_1",
     "update_interval_sec": 30,
-    "mqtt_delay_sec": 0.03,
+    "mqtt_delay_sec": 0.05,
     "max_chars_before_scroll": 15,
     "scroll_type": "loop",
     "default_type": "crop",

@@ -44,17 +44,74 @@ class ConfigChangeHandler(FileSystemEventHandler):
                     FORCE_UPDATE = True
                 self.last_modified = time.time()
 
-def safe_publish(client, topic, payload):
-    client.publish(topic, payload)
-    # Dein Wunsch-Delay gegen Overflow
+
+# --- MQTT CALLBACKS ---
+
+def on_connect(client, userdata, flags, rc, properties=None):
+    """Wird aufgerufen, wenn die Verbindung zum Broker steht."""
+    prefix = globals_cfg.get('mqtt_topic_prefix', 'hasp/plate')
+    
+    # Abonnieren des LWT (Online-Status)
+    # Wichtig: prefix endet oft nicht auf /, daher prüfen wir das
+    lwt_topic = f"{prefix}/LWT"
+    client.subscribe(lwt_topic)
+    print(f"[*] Abonniere Status-Topic: {lwt_topic}")
+
+    # Abonnieren von Interaktionen (Buttons, Slider, etc.)
+    state_topic = f"{prefix}/state/#"
+    client.subscribe(state_topic)
+    print(f"[*] Abonniere Interaktions-Topic: {state_topic}")
+
+def on_message(client, userdata, msg):
+    """Wird aufgerufen, wenn eine Nachricht vom Display kommt."""
+    topic = msg.topic
+    payload = msg.payload.decode()
+    print(payload)
+
+    # 1. Online-Status erkennen
+    if topic.endswith("LWT"):
+        if payload.lower() == "online":
+            print(f"\n[!] DISPLAY ONLINE: {topic}")
+            # Sofort ein Update triggern, wenn es online kommt
+            global FORCE_UPDATE
+            FORCE_UPDATE = True
+            print("Force_Update")
+        else:
+            print(f"\n[!] DISPLAY OFFLINE: {payload}")
+
+    # 2. Platzhalter für Interaktionen (Buttons etc.)
+    elif "/state/" in topic:
+        # Beispiel-Logik für später:
+        # Wenn topic == "hasp/plate_willi_1/state/p2b10" und payload == '{"event":"down"}'
+        print(f"    -> Interaktion: {topic} : {payload}")
+
+
+def safe_publish(client, sub_topic, payload):
+    """
+    Baut aus dem Prefix und dem Anhang den korrekten Pfad:
+    prefix/command/sub_topic
+    """
+    #print(sub_topic)
+    # Prefix aus Config holen und säubern
+    prefix = globals_cfg.get('mqtt_topic_prefix', 'hasp/plate').strip('/')
+    
+    # Anhang säubern (falls er mit / oder dem Prefix kommt)
+    clean_sub = str(sub_topic).replace(prefix, "").lstrip('/')
+    
+    # Finalen Pfad bauen
+    full_topic = f"{prefix}/command/{clean_sub}"
+    
+    client.publish(full_topic, payload)
     time.sleep(globals_cfg.get('mqtt_delay_sec', 0.1))
 
 def init_displays(client):
-    print("Sende Layout-Initialisierung...")
-    prefix = globals_cfg['mqtt_topic_prefix']
+    print("Initialisiere Layout-Struktur...")
     cols = globals_cfg['columns_x']
+    
     for page in config['pages']:
-        topic_base = f"{prefix}p{page['id']}b"
+        # Nur noch der Anhang, z.B. "p2b"
+        topic_base = f"p{page['id']}b" 
+        
         for i in range(page['line_count']):
             bid = 11 + (i * 10)
             safe_publish(client, f"{topic_base}{bid}.x", cols['time'])
@@ -64,8 +121,7 @@ def init_displays(client):
             safe_publish(client, f"{topic_base}{bid+3}.w", 210)
 
 def update_page(client, page_cfg):
-    prefix = globals_cfg['mqtt_topic_prefix']
-    topic_base = f"{prefix}p{page_cfg['id']}b"
+    topic_base = f"p{page_cfg['id']}b"
     
     deps, station_name = get_vvo_departures(
         page_cfg['vvo_id_or_name'], 
@@ -126,15 +182,23 @@ def main():
     if not load_config(config_abs_path): return
 
     client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
+    
+    # Callbacks registrieren
+    client.on_connect = on_connect
+    client.on_message = on_message
+
     if args.user and args.password:
         client.username_pw_set(args.user, args.password)
     
     print(f"Verbinde zu MQTT Broker: {args.broker}")
     client.connect(args.broker, 1883, 60)
+    
+    # Loop starten
     client.loop_start()
     
+    # Layout initialisieren
     init_displays(client)
-
+    
     # Watchdog Setup
     observer = Observer()
     handler = ConfigChangeHandler(client, config_abs_path)

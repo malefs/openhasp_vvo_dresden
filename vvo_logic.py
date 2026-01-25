@@ -162,7 +162,7 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
             elif mot_type == "IntercityBus" or line_val == "SEV": line_val = "SEV"
 
             destination = dep.get('Direction', '')
-            print(mot_type,destination)
+            #print(mot_type,destination)
             if not platform_filter and platform:
                 label = "Gl." if mot_type in ["Train", "RegionalTrain", "SuburbanRailway"] else "St."
                 destination = f"{label}{platform} {destination}"
