@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "paho-mqtt>=2.1.0",
+    "pyproj>=3.7.2",
     "requests>=2.32.5",
     "watchdog>=6.0.0",
 ]

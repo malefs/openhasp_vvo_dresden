@@ -1,7 +1,11 @@
 // --- PAGE 1: Hauptabfahrten ---
 {"page":1,"id":1,"obj":"btn","x":0,"y":0,"w":480,"h":60,"text":"\uE70E Abfahrten P1","text_font":32,"bg_color":"#2C3E50","radius":0}
+{"page":1,"id":2,"obj":"label","x":0,"y":0,"w":200,"h":60,"text":"    °C","text_font":24,"text_color":"#FFFFFF","align":0}
+{"page":1,"id":3,"obj":"label","x":0,"y":23,"w":200,"h":60,"text":"","text_font":24,"text_color":"#FFFFFF","align":0}
+
+
 {"page":1,"id":20,"obj":"label","x":0,"y":60,"w":480,"h":40,"text":"      Zeit       Typ  Linie              Ziel","text_font":24,"bg_color":"#555555","bg_opa":255,"text_color":"#FFFFFF"}
-{"page":1,"id":3,"obj":"obj","x":5,"y":105,"w":470,"h":550,"bg_color":"#ECF0F1","bg_opa":255,"radius":8,"click":0}
+{"page":1,"id":4,"obj":"obj","x":5,"y":105,"w":470,"h":550,"bg_color":"#ECF0F1","bg_opa":255,"radius":8,"click":0}
 
 /* ZEILE 1 bis 5 für Page 1 */
 {"page":1,"id":11,"obj":"label","parentid":3,"x":10,"y":15,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}
@@ -43,8 +47,11 @@
 
 // --- PAGE 2: Weitere Abfahrten ---
 {"page":2,"id":1,"obj":"btn","x":0,"y":0,"w":480,"h":60,"text":"\uE70E Abfahrten P2","text_font":32,"bg_color":"#2C3E50","radius":0}
-{"page":2,"id":20,"obj":"label","x":0,"y":60,"w":480,"h":40,"text":"      Zeit         Typ Linie              Ziel","text_font":24,"bg_color":"#555555","bg_opa":255,"text_color":"#FFFFFF"}
-{"page":2,"id":3,"obj":"obj","x":5,"y":105,"w":470,"h":550,"bg_color":"#ECF0F1","bg_opa":255,"radius":8,"click":0}
+{"page":2,"id":2,"obj":"label","x":0,"y":0,"w":200,"h":60,"text":"    °C","text_font":24,"text_color":"#FFFFFF","align":0}
+{"page":2,"id":3,"obj":"label","x":0,"y":23,"w":200,"h":60,"text":"","text_font":24,"text_color":"#FFFFFF","align":0}
+
+{"page":2,"id":20,"obj":"label","x":0,"y":60,"w":480,"h":40,"text":"      Zeit        Typ Linie              Ziel","text_font":24,"bg_color":"#555555","bg_opa":255,"text_color":"#FFFFFF"}
+{"page":2,"id":4,"obj":"obj","x":5,"y":105,"w":470,"h":550,"bg_color":"#ECF0F1","bg_opa":255,"radius":8,"click":0}
 
 /* ZEILE 1 bis 5 für Page 2 */
 {"page":2,"id":11,"obj":"label","parentid":3,"x":10,"y":15,"w":80,"h":35,"text_font":30,"text_color":"#7F8C8D","align":0}

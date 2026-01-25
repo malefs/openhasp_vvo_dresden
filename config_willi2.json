@@ -1,6 +1,6 @@
 {
   "global_settings": {
-    "mqtt_topic_prefix": "hasp/plate",
+    "mqtt_topic_prefix": "hasp/plate_willi_2",
     "update_interval_sec": 30,
     "mqtt_delay_sec": 0.05,
     "max_chars_before_scroll": 15,
@@ -22,7 +22,7 @@
     {
       "id": 1,
       "vvo_id_or_name": "S-Bahnhof Bischofsplatz",
-      "platform": 1,
+      "platform": null,
       "mot_filter": ["tram","s"],
       "line_count": 5
     },
@@ -35,5 +35,3 @@
     }
   ]
 }
-
-

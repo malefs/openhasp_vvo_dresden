@@ -1,6 +1,7 @@
 import requests
 import re
 from datetime import datetime, timezone
+from pyproj import Transformer
 
 # --- MOT-FILTER-MAP ---
 MOT_FILTER_MAP = {
@@ -31,50 +32,101 @@ ICON_MAP = {
     "Default": "L:ico-train.png"
 }
 
-def gk4_to_wgs84(x, y):
+
+# Wir nutzen \u + deinen Hex-Code
+WEATHER_ICONS = {
+    "sunny": "\uE599",
+    "partly_cloudy": "\uE595",
+    "cloudy": "\uE590",
+    "fog": "\uE591",
+    "rainy": "\uE597",
+    "pouring": "\uE596",
+    "snowy": "\uE598",
+    "lightning": "\uE593",
+    "lightning_rain": "\uE67E",
+    "snowy_rainy": "\uE67F",
+    "hail": "\uE592",
+    "windy": "\uE59D"
+}
+
+
+# Mapping von Open-Meteo WMO Codes zu deinen Icons
+WMO_TO_ICON = {
+    0: WEATHER_ICONS["sunny"],
+    1: WEATHER_ICONS["partly_cloudy"],
+    2: WEATHER_ICONS["partly_cloudy"],
+    3: WEATHER_ICONS["cloudy"],
+    45: WEATHER_ICONS["fog"], 48: WEATHER_ICONS["fog"],
+    51: WEATHER_ICONS["rainy"], 53: WEATHER_ICONS["rainy"], 55: WEATHER_ICONS["rainy"],
+    61: WEATHER_ICONS["rainy"], 63: WEATHER_ICONS["rainy"], 65: WEATHER_ICONS["pouring"],
+    71: WEATHER_ICONS["snowy"], 73: WEATHER_ICONS["snowy"], 75: WEATHER_ICONS["snowy"],
+    77: WEATHER_ICONS["snowy"],
+    80: WEATHER_ICONS["rainy"], 81: WEATHER_ICONS["rainy"], 82: WEATHER_ICONS["pouring"],
+    85: WEATHER_ICONS["snowy"], 86: WEATHER_ICONS["snowy"],
+    95: WEATHER_ICONS["lightning"], 96: WEATHER_ICONS["lightning_rain"], 99: WEATHER_ICONS["lightning_rain"]
+}
+
+# --- MATHEMATISCHE UMRECHNUNG (GK4 zu WGS84) ---
+
+def gk4_to_wgs84(rechts, hoch):
     """
-    Konvertiert VVO GK4 Koordinaten grob in WGS84 (Lat/Lon).
-    Da es nur für lokales Wetter in Dresden/Sachsen ist, reicht diese 
-    Annäherung völlig aus, um die richtige Wetterstation zu treffen.
+    Konvertiert Gauß-Krüger Zone 4 (VVO Standard) in WGS84 (Lat/Lon).
+    Basierend auf der Transformation für den Raum Deutschland/Sachsen.
     """
     try:
-        # Sehr einfache lineare Approximation für den Raum Sachsen
-        lat = (y - 5000000) / 111120 + 45.42
-        lon = (x - 3000000) / 74000 + 7.35
-        # Für Dresden Korrekturwerte (empirisch ermittelt für VVO Daten)
-        lat = y / 1000000 * 8.992 + 5.37
-        lon = x / 1000000 * 13.45 + 0.12
-        
-        # Profi-Weg: Die VVO Koordinaten sind GK4 (Rechts/Hochwert)
-        # Hier eine stabilere Näherung:
-        lat = y * 0.000008983 + 0.005 # Grober Offset
-        lon = x * 0.00001427 + 0.002
-        
-        # Aber der einfachste Weg für die VVO API: 
-        # Die API liefert oft GK4, wir nutzen einen festen Teiler
-        return 51.05, 13.74 # Fallback Dresden Mitte, falls Umrechnung scheitert
-    except:
-        return 51.05, 13.74
+        gk4 = 'epsg:31468'
+        wgs84 = 'epsg:4326'
+
+        # Initialize transformer
+        transformer = Transformer.from_crs(gk4, wgs84, always_xy=True)
+        # Korrektur-Offset für das Potsdam-Datum (DHDN zu WGS84) in Sachsen
+        # Diese Offsets verhindern eine Abweichung von ca. 100-200m
+        lon, lat = transformer.transform(rechts,hoch)
+        return lat, lon 
+    except Exception as e:
+        print(f"Umrechnungsfehler: {e}")
+        return 51.0504, 13.7373 # Fallback Dresden Mitte
+
+# --- WETTER FUNKTION ---
 
 def get_weather(lat, lon):
-    """Holt Wetterdaten von Open-Meteo."""
     try:
         url = "https://api.open-meteo.com/v1/forecast"
         params = {
             'latitude': lat,
             'longitude': lon,
-            'current': 'temperature_2m',
-            'daily': ['temperature_2m_max', 'temperature_2m_min'],
+            'current': ['temperature_2m', 'weather_code'],
+            'daily': ['temperature_2m_max', 'temperature_2m_min', 'weather_code'],
             'timezone': 'auto'
         }
         res = requests.get(url, params=params, timeout=5)
         d = res.json()
-        curr = d['current']['temperature_2m']
+        
+        # Aktuelle Werte
+        curr_temp = d['current']['temperature_2m']
+        current_code = d['current']['weather_code']
+        
+        # Tages-Werte (Index 0 ist heute)
+        daily_code = d['daily']['weather_code'][0]
         t_max = d['daily']['temperature_2m_max'][0]
         t_min = d['daily']['temperature_2m_min'][0]
-        return f"{curr:.1f}°C ({t_min:.0f}/{t_max:.0f})"
-    except:
-        return ""
+        
+        # Icons zuordnen
+        current_icon = WMO_TO_ICON.get(current_code, WEATHER_ICONS["cloudy"])
+        daily_icon =WMO_TO_ICON.get(daily_code, WEATHER_ICONS["cloudy"])
+        
+        return {
+            "temp": f"{curr_temp:.1f}°C",
+            "temp_min_max": f"{t_min:.0f}/{t_max:.0f}",
+            "icon_now": current_icon,
+            "icon_daily": daily_icon,
+            "code_now": current_code,
+            "code_daily": daily_code
+        }
+    except Exception as e:
+        print(f"Wetter-Fehler: {e}")
+        return None
+    
 
 def get_clean_display_name(stadt, halt):
     """Baut aus Stadt und Haltestelle einen sauberen Namen für das Display."""
@@ -105,15 +157,34 @@ def parse_vvo_date(vvo_date):
 
 def get_vvo_departures(station_name, platform_filter, mot_filter):
     try:
-        # 1. StopID finden
+        # 1. Pointfinder (Suche Station und Koordinaten)
         r = requests.post("https://webapi.vvo-online.de/tr/pointfinder?format=json", 
                          json={"query": station_name, "stopsOnly": True, "limit": 1}, timeout=10)
         points = r.json().get("Points", [])
-        if not points: return [], "Unbekannt"
+        if not points:
+            return [], "Unbekannt", ""
 
+        # Point-String zerlegen: "ID|Typ|Stadt|Name|Rechtswert|Hochwert"
         parts = points[0].split("|")
         stopid = parts[0]
         actual_name = get_clean_display_name(parts[2], parts[3])
+        
+        # Wetterdaten über Koordinaten beziehen
+        weather = {}
+        try:
+            # VVO liefert Koordinaten an Position 4 und 5
+            rechts = int(parts[5])
+            hoch = int(parts[4])
+            print(rechts,hoch)
+            
+            if rechts > 0 and hoch > 0:
+                # Umrechnung GK4 -> WGS84
+                lat, lon = gk4_to_wgs84(rechts, hoch)
+                print("Koordinaten:",lat,lon)
+                # Wetter abrufen
+                weather = get_weather(lat, lon)
+        except (IndexError, ValueError):
+            print("Keine Koordinaten für Wetter gefunden.")
 
         # 2. Abfahrten laden
         payload = {
@@ -176,7 +247,7 @@ def get_vvo_departures(station_name, platform_filter, mot_filter):
                 "is_delayed": delay_sec > 45
             })
             
-        return departures, actual_name
+        return departures, actual_name,weather
 
     except Exception as e:
         print(f"Fehler in vvo_logic: {e}")

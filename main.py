@@ -123,12 +123,19 @@ def init_displays(client):
 def update_page(client, page_cfg):
     topic_base = f"p{page_cfg['id']}b"
     
-    deps, station_name = get_vvo_departures(
+    deps, station_name,weather = get_vvo_departures(
         page_cfg['vvo_id_or_name'], 
         page_cfg['platform'], 
         page_cfg['mot_filter']
     )
     
+    # Wetter auf das Display schicken (z.B. Objekt ID 2)
+    print(weather)
+    if weather:
+        # safe_publish nutzt jetzt das vereinfachte System (nur Anhang senden)
+        safe_publish(client, f"{topic_base}2.text", weather.get("temp"))
+        safe_publish(client, f"{topic_base}3.text", weather.get("icon_now"))
+
     now_dt = datetime.now()
     display_title = f"{station_name} Gl.{page_cfg['platform']}" if page_cfg['platform'] else station_name
     
