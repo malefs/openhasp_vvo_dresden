@@ -1,6 +1,6 @@
 {
   "global_settings": {
-    "mqtt_topic_prefix": "hasp/plate_willi_2",
+    "mqtt_topic_prefix": "hasp/plate_willi_1",
     "update_interval_sec": 30,
     "mqtt_delay_sec": 0.05,
     "max_chars_before_scroll": 15,
@@ -28,7 +28,7 @@
     },
     {
       "id": 2,
-      "vvo_id_or_name": "Berlin  Pankstrasse", 
+      "vvo_id_or_name": "Dresden Bischofsweg", 
       "platform": null,
       "mot_filter": [],
       "line_count": 5

@@ -88,7 +88,6 @@ def gk4_to_wgs84(rechts, hoch):
         return 51.0504, 13.7373 # Fallback Dresden Mitte
 
 # --- WETTER FUNKTION ---
-
 def get_weather(lat, lon):
     try:
         url = "https://api.open-meteo.com/v1/forecast"
@@ -99,7 +98,10 @@ def get_weather(lat, lon):
             'daily': ['temperature_2m_max', 'temperature_2m_min', 'weather_code'],
             'timezone': 'auto'
         }
-        res = requests.get(url, params=params, timeout=5)
+        
+        # Timeout auf 10s erhöht, um Netzwerk-Hänger abzufangen
+        res = requests.get(url, params=params, timeout=10)
+        res.raise_for_status() # Wirft Fehler bei 4xx oder 5xx Statuscodes
         d = res.json()
         
         # Aktuelle Werte
@@ -111,9 +113,15 @@ def get_weather(lat, lon):
         t_max = d['daily']['temperature_2m_max'][0]
         t_min = d['daily']['temperature_2m_min'][0]
         
-        # Icons zuordnen
-        current_icon = WMO_TO_ICON.get(current_code, WEATHER_ICONS["cloudy"])
-        daily_icon =WMO_TO_ICON.get(daily_code, WEATHER_ICONS["cloudy"])
+        # --- Hilfsfunktion zum Entpacken von Tupeln ---
+        def clean_icon(icon_data):
+            if isinstance(icon_data, (tuple, list)):
+                return icon_data[0]
+            return icon_data
+
+        # Icons zuordnen und sicherstellen, dass es Strings sind
+        current_icon = clean_icon(WMO_TO_ICON.get(current_code, WEATHER_ICONS["cloudy"]))
+        daily_icon = clean_icon(WMO_TO_ICON.get(daily_code, WEATHER_ICONS["cloudy"]))
         
         return {
             "temp": f"{curr_temp:.1f}°C",
@@ -123,10 +131,12 @@ def get_weather(lat, lon):
             "code_now": current_code,
             "code_daily": daily_code
         }
+        
     except Exception as e:
         print(f"Wetter-Fehler: {e}")
-        return None
-    
+        # Rückgabe eines leeren Dicts verhindert 'NoneType' AttributeError in der main.py
+        return {}
+
 
 def get_clean_display_name(stadt, halt):
     """Baut aus Stadt und Haltestelle einen sauberen Namen für das Display."""
