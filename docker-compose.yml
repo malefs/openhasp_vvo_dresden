@@ -4,6 +4,8 @@ services:
     build: .
     container_name: vvo-display-${CONFIG_FILE}  # optional
     restart: unless-stopped
+    environment:
+      - TZ=Europe/Berlin
     env_file:
       - ./${ENV_FILE}    # specify which env file to load
     volumes:

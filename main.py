@@ -6,6 +6,10 @@ from datetime import datetime
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import paho.mqtt.client as mqtt
+try:
+    from zoneinfo import ZoneInfo  # Python 3.9+
+except ImportError:
+    from backports.zoneinfo import ZoneInfo # Fallback for older versions
 
 # Import der VVO Logik
 from vvo_logic import get_vvo_departures
@@ -135,8 +139,13 @@ def update_page(client, page_cfg):
         # safe_publish nutzt jetzt das vereinfachte System (nur Anhang senden)
         safe_publish(client, f"{topic_base}2.text", weather.get("temp"))
         safe_publish(client, f"{topic_base}3.text", weather.get("icon_now"))
+    
+    # 1. Define Berlin Timezone
+    berlin_tz = ZoneInfo("Europe/Berlin")
+    # 2. Get current time in Berlin
+    now_dt = datetime.now(berlin_tz)
 
-    now_dt = datetime.now()
+    #now_dt = datetime.now()
     display_title = f"{station_name} Gl.{page_cfg['platform']}" if page_cfg['platform'] else station_name
     
     # Konsolenausgabe
