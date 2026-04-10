@@ -1,0 +1,24 @@
+#run with: ENV_FILE=willi.env docker compose --env-file willi.env up -d
+services:
+  vvo-display:
+    build: .
+    container_name: vvo-display-${CONFIG_FILE}  # optional
+    restart: unless-stopped
+    env_file:
+      - ./${ENV_FILE}    # specify which env file to load
+    volumes:
+      - ./configs/${CONFIG_FILE}:/app/config.json:ro
+    command: >
+      uv run main.py
+      -b ${BROKER}
+      -u ${USER}
+      -P ${PASSWORD}
+      config.json
+    networks:
+      - shared_mqtt
+
+networks:
+  shared_mqtt:
+    external: true
+
+

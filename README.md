@@ -26,9 +26,17 @@ install uv (falls noch nicht geschehen)
    
 	 uv sync
 
-	 uv run main.py "Bischofsplatz"   --gleis 1 --filter tram   --page 1	
+	 old run:
+         uv run main.py "Bischofsplatz"   --gleis 1 --filter tram   --page 1	
 	 uv run main.py "Bischofsplatz"   --filter tram   --page 1
 	 uv run main.py "Carolaplatz"     --page 2
+         
+         new with docker and .env!!
+
+         run local with:
+         uv run main.py  -u hasp_user -P malefski  configs/config_willi2.json
+         
+         ENV_FILE=willi.env docker compose --env-file willi.env up -d
 ```
   
 <p align="center">
