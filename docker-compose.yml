@@ -11,7 +11,7 @@ services:
     command: >
       uv run main.py
       -b ${BROKER}
-      -u ${USER}
+      -u ${MQTTUSER}
       -P ${PASSWORD}
       config.json
     networks:
