@@ -32,9 +32,6 @@ install uv (falls noch nicht geschehen)
 	 uv run main.py "Carolaplatz"     --page 2
          
          new with docker and .env!!
-
-         run local with:
-         uv run main.py  -u hasp_user -P malefski  configs/config_willi2.json
          
          ENV_FILE=willi.env docker compose --env-file willi.env up -d
 ```
