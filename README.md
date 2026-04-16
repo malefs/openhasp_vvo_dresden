@@ -25,15 +25,8 @@ install uv (falls noch nicht geschehen)
 	 # uv add requests paho-mqtt
    
 	 uv sync
-
-	 old run:
-         uv run main.py "Bischofsplatz"   --gleis 1 --filter tram   --page 1	
-	 uv run main.py "Bischofsplatz"   --filter tram   --page 1
-	 uv run main.py "Carolaplatz"     --page 2
-         
-         new with docker and .env!!
-         
-         ENV_FILE=willi.env docker compose --env-file willi.env up -d
+        
+     ENV_FILE=willi.env docker compose --env-file willi.env up -d
 ```
   
 <p align="center">
